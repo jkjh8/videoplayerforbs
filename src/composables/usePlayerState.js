@@ -13,6 +13,7 @@ function stateReady() {
 }
 
 function statePlaying() {
+  console.log('_play true')
   return (_play.value = true)
 }
 

@@ -1,13 +1,21 @@
 <script setup>
 import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
+import { socket } from 'src/boot/socketio'
 import MenuComponent from 'components/layout/menuComponent'
+
+import { _file, _play } from 'src/composables/usePlayer'
 
 const router = useRouter()
 
-function clickHome() {
-  router.push('/')
-}
+onBeforeMount(() => {
+  socket.on('source', (file) => {
+    if (_file.value !== file.file) {
+      _file.value = file.file
+      _play.value = false
+    }
+  })
+})
 </script>
 
 <template>
@@ -25,9 +33,11 @@ function clickHome() {
               name="svguse:icons.svg#logo"
               color="primary"
               size="md"
-              @click="clickHome"
+              @click="router.push('/')"
             />
-            <div class="home text-h5" @click="clickHome">Media Player</div>
+            <div class="home text-h5" @click="router.push('/')">
+              Media Player
+            </div>
           </div>
         </div>
         <!-- menu -->

@@ -10,6 +10,23 @@ import {
   columns
 } from 'src/composables/useFiles'
 
+import {
+  mediaplayer,
+  autoplay,
+  bottomControls,
+  controlDisplayTime,
+  showBigPlayBtn,
+  loop,
+  muted,
+  noControls,
+  volume,
+  showTooltips,
+  source,
+  _file,
+  _ready,
+  _wait,
+  _play
+} from 'src/composables/usePlayer'
 import { callPlayDirect, callClear } from 'src/composables/usePlayerCalls'
 
 import PageName from 'src/components/layout/pageName.vue'
@@ -85,82 +102,94 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="row no-wrap justify-between items-center">
-    <PageName
-      class="animate__pulse"
-      name="파일 & 폴더"
-      caption="파일 & 폴더 관리"
-      icon="svguse:icons.svg#diskColor"
-    />
-    <div>
-      <q-btn round flat color="red" icon="stop" @click="callClear">
-        <Tooltip msg="중지" />
-      </q-btn>
-      <q-btn round flat color="yellow" icon="folder" @click="makeFolder">
-        <Tooltip msg="폴더생성" />
-      </q-btn>
-      <q-btn round flat color="primary" icon="upload" @click="upload">
-        <Tooltip msg="파일업로드" />
-      </q-btn>
+  <q-page>
+    file = {{ (_file, _play) }}
+    <div class="row no-wrap justify-between items-center">
+      <PageName
+        class="animate__pulse"
+        name="파일 & 폴더"
+        caption="파일 & 폴더 관리"
+        icon="svguse:icons.svg#diskColor"
+      />
+      <div>
+        <q-btn round flat color="red" icon="stop" @click="callClear">
+          <Tooltip msg="중지" />
+        </q-btn>
+        <q-btn round flat color="yellow" icon="folder" @click="makeFolder">
+          <Tooltip msg="폴더생성" />
+        </q-btn>
+        <q-btn round flat color="primary" icon="upload" @click="upload">
+          <Tooltip msg="파일업로드" />
+        </q-btn>
+      </div>
     </div>
-  </div>
-  <div class="row justify-center q-pt-md">
-    <q-card style="width: 100%">
-      <q-card-section class="q-pa-none">
-        <q-table
-          :columns="columns"
-          :rows="fileWithType"
-          :pagination="{ rowsPerPage: 0 }"
-        >
-          <template #body="props">
-            <q-tr :props="props">
-              <q-td key="name" :props="props" class="text-left">
-                <div class="row items-center q-gutter-x-sm">
-                  <q-icon
-                    v-if="props.row.type.includes('image')"
-                    name="image"
-                    size="sm"
-                    color="primary"
-                  />
-                  <q-icon
-                    v-if="props.row.type.includes('video')"
-                    name="videocam"
-                    size="sm"
-                    color="blue-grey-10"
-                  />
-                  <div>
-                    {{ props.row.name }}
+    <div class="row justify-center q-pt-md">
+      <q-card style="width: 100%">
+        <q-card-section class="q-pa-none">
+          <q-table
+            :columns="columns"
+            :rows="fileWithType"
+            :pagination="{ rowsPerPage: 0 }"
+          >
+            <template #body="props">
+              <q-tr :props="props">
+                <q-td key="name" :props="props" class="text-left">
+                  <div class="row items-center q-gutter-x-sm">
+                    <q-icon
+                      v-if="props.row.type.includes('image')"
+                      name="image"
+                      size="sm"
+                      color="primary"
+                    />
+                    <q-icon
+                      v-if="props.row.type.includes('video')"
+                      name="videocam"
+                      size="sm"
+                      color="blue-grey-10"
+                    />
+                    <div>
+                      {{ props.row.name }}
+                    </div>
                   </div>
-                </div>
-              </q-td>
-              <q-td key="size" :props="props">
-                {{ format.humanStorageSize(props.row.size) }}
-              </q-td>
-              <q-td key="createdAt" :props="props">
-                {{
-                  date.formatDate(props.row.createdAt, 'YYYY-MM-DD hh:mm:ss a')
-                }}
-              </q-td>
-              <q-td key="actions" :props="props">
-                <div class="q-gutter-x-sm">
-                  <IconBtn
-                    name="play_arrow"
-                    msg="재생"
-                    @click="callPlayDirect(props.row)"
-                  />
-                  <IconBtn
-                    name="delete"
-                    color="red"
-                    size="xs"
-                    msg="삭제"
-                    @click="deleteFile(props.row)"
-                  />
-                </div>
-              </q-td>
-            </q-tr>
-          </template>
-        </q-table>
-      </q-card-section>
-    </q-card>
-  </div>
+                </q-td>
+                <q-td key="size" :props="props">
+                  {{ format.humanStorageSize(props.row.size) }}
+                </q-td>
+                <q-td key="createdAt" :props="props">
+                  {{
+                    date.formatDate(
+                      props.row.createdAt,
+                      'YYYY-MM-DD hh:mm:ss a'
+                    )
+                  }}
+                </q-td>
+                <q-td key="actions" :props="props">
+                  <div class="q-gutter-x-sm">
+                    <IconBtn
+                      name="play_arrow"
+                      msg="재생"
+                      @click="callPlayDirect(props.row)"
+                    />
+                    <IconBtn
+                      name="delete"
+                      color="red"
+                      size="xs"
+                      msg="삭제"
+                      @click="deleteFile(props.row)"
+                    />
+                  </div>
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+        </q-card-section>
+      </q-card>
+    </div>
+    <q-page-sticky v-if="_play" position="bottom-right" :offset="[18, 18]">
+      <div class="q-gutter-x-sm">
+        <q-btn fab icon="play_arrow" color="primary" />
+        <q-btn fab icon="stop" color="red-10" />
+      </div>
+    </q-page-sticky>
+  </q-page>
 </template>

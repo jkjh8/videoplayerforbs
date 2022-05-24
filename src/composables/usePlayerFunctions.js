@@ -1,4 +1,4 @@
-import { mediaplayer, playFile, source, _ready, _wait } from './usePlayer'
+import { mediaplayer, _file, _play, source, _ready, _wait } from './usePlayer'
 
 function fnPlay() {
   return new Promise((resolve, reject) => {
@@ -15,6 +15,7 @@ function fnPlay() {
             .then((_) => {
               // Auto play
               console.log('play ok')
+              _play.value = true
             })
             .catch((error) => {
               console.error('play error', error)
@@ -29,7 +30,7 @@ function fnPlay() {
 }
 
 function clearSource() {
-  playFile.value = null
+  _file.value = null
   source.value = ''
 }
 

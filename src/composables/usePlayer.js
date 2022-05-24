@@ -12,7 +12,7 @@ const noControls = ref(true)
 const volume = ref(60)
 const showTooltips = ref(false)
 const source = ref('')
-const playFile = ref(null)
+const _file = ref(null)
 const duration = ref(null)
 const _curTime = ref(null)
 const _remaining = ref(null)
@@ -38,5 +38,5 @@ export {
   _play,
   _curTime,
   _remaining,
-  playFile
+  _file
 }

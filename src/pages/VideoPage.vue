@@ -12,10 +12,10 @@ import {
   loop,
   muted,
   noControls,
-  playFile,
   volume,
   showTooltips,
   source,
+  _file,
   _ready,
   _wait,
   _play
@@ -40,9 +40,13 @@ onMounted(() => {
   socket.on('player', async (args) => {
     switch (args.command) {
       case 'updateSource':
-        if (playFile.value !== args.file) {
-          source.value = args.file.address
+        if (_file.value !== args.file) {
+          _file.value = args.file
           _play.value = false
+          if (_file.value.type.includes('video')) {
+            source.value = args.file.address
+            await fnPlay()
+          }
         }
         break
       case 'play':
@@ -59,28 +63,40 @@ onMounted(() => {
 </script>
 
 <template>
-  <q-media-player
-    ref="mediaplayer"
-    type="video"
-    :source="source"
-    :autoplay="autoplay"
-    :bottom-controls="bottomControls"
-    :controls-display-time="controlDisplayTime"
-    :loop="loop"
-    :muted="muted"
-    :no-controls="noControls"
-    :show-big-play-button="showBigPlayBtn"
-    :volume="volume"
-    :show-tooltips="showTooltips"
-    @ready="stateReady"
-    @playing="statePlaying"
-    @duration="stateDuration"
-    @ended="stateEnded"
-    @error="stateError"
-    @paused="statePaused"
-    @timeupdate="timeUpdate"
-    @loadeddata="stateLoadedData"
-    @volume="stateVolume"
-    @mute="stateMuted"
-  />
+  <q-page v-if="_file && _file.type.includes('video')" class="bg-black">
+    <q-media-player
+      ref="mediaplayer"
+      type="video"
+      :source="source"
+      :autoplay="autoplay"
+      :bottom-controls="bottomControls"
+      :controls-display-time="controlDisplayTime"
+      :loop="loop"
+      :muted="muted"
+      :no-controls="noControls"
+      :show-big-play-button="showBigPlayBtn"
+      :volume="volume"
+      :show-tooltips="showTooltips"
+      @ready="stateReady"
+      @playing="statePlaying"
+      @duration="stateDuration"
+      @ended="stateEnded"
+      @error="stateError"
+      @paused="statePaused"
+      @timeupdate="timeUpdate"
+      @loadeddata="stateLoadedData"
+      @volume="stateVolume"
+      @mute="stateMuted"
+    />
+  </q-page>
+
+  <q-page v-else-if="_file && file.type.includes('image')"> image </q-page>
+
+  <q-page
+    v-else
+    class="flex flex-center bg-black text-white"
+    style="width: 100%; height: 100%"
+  >
+    <q-icon name="svguse:icons.svg#logo" size="200px" />
+  </q-page>
 </template>
