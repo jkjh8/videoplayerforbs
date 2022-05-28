@@ -1,65 +1,42 @@
-import {
-  duration,
-  volume,
-  muted,
-  _curTime,
-  _remaining,
-  _play,
-  _ready
-} from './usePlayer'
+import { playerStatus as ps } from './usePlayer'
 
-function stateReady() {
-  return (_ready.value = true)
+const fnStatus = {
+  ready: () => {
+    return (ps.value.ready = true)
+  },
+  play: () => {
+    console.log('Play')
+  },
+  playing: () => {
+    console.log('playing')
+    ps.value.play = true
+  },
+  duration: (seconds) => {
+    ps.value.duration = seconds
+  },
+  error: (err) => {
+    console.error(err)
+  },
+  timeUpdate: (cur, rem) => {
+    ps.value.curTime = cur
+    ps.value.remaining = rem
+  },
+  loadedData: () => {
+    console.log('loadedData')
+  },
+  volume: (volume) => {
+    ps.value.volume = volume
+  },
+  muted: (state) => {
+    ps.value.muted = state
+  },
+  ended: () => {
+    ps.value.ready = false
+    ps.value.play = false
+  },
+  paused: () => {
+    console.log('paused')
+  }
 }
 
-function statePlaying() {
-  console.log('_play true')
-  return (_play.value = true)
-}
-
-function stateDuration(seconds) {
-  duration.value = seconds
-}
-
-function stateError(err) {
-  console.error('Player Error ', err)
-}
-
-function timeUpdate(curTime, remaining) {
-  _curTime.value = curTime
-  _remaining.value = remaining
-}
-
-function stateLoadedData() {
-  console.log('Player Loaded Data')
-}
-
-function stateVolume(vol) {
-  volume.value = vol
-}
-
-function stateMuted(state) {
-  muted.value = state
-}
-
-function stateEnded() {
-  _ready.value = false
-  _play.value = false
-}
-
-function statePaused() {
-  console.log('Paused')
-}
-
-export {
-  stateReady,
-  statePlaying,
-  stateDuration,
-  stateError,
-  timeUpdate,
-  stateLoadedData,
-  stateVolume,
-  stateMuted,
-  stateEnded,
-  statePaused
-}
+export { fnStatus }

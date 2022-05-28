@@ -1,42 +1,68 @@
-import { ref } from 'vue'
-import { socket } from 'src/boot/socketio'
+import { ref, reactive } from 'vue'
 
 const mediaplayer = ref(null)
-const autoplay = ref(false)
-const bottomControls = ref(false)
-const controlDisplayTime = ref(2000)
-const showBigPlayBtn = ref(false)
-const loop = ref(false)
-const muted = ref(false)
-const noControls = ref(true)
-const volume = ref(60)
-const showTooltips = ref(false)
-const source = ref('')
-const _file = ref(null)
-const duration = ref(null)
-const _curTime = ref(null)
-const _remaining = ref(null)
-const _ready = ref(false)
-const _wait = ref(null)
-const _play = ref(false)
 
-export {
-  mediaplayer,
-  autoplay,
-  bottomControls,
-  controlDisplayTime,
-  duration,
-  showBigPlayBtn,
-  loop,
-  muted,
-  noControls,
-  volume,
-  showTooltips,
-  source,
-  _ready,
-  _wait,
-  _play,
-  _curTime,
-  _remaining,
-  _file
+const playerStatus = ref({
+  autoplay: false,
+  bottomControls: false,
+  controlDisplayTime: ref(2000),
+  showBigPlayBtn: true,
+  loop: false,
+  muted: false,
+  noControls: false,
+  volume: 60,
+  showTooltips: false,
+  source:
+    'http://www.peach.themazzone.com/durian/movies/sintel-2048-surround.mp4',
+  duration: 0,
+  file: null,
+  curTime: 0,
+  remaining: 0,
+  ready: false,
+  wait: false,
+  play: false,
+  paused: false
+})
+
+const fnStatus = {
+  ready: () => {
+    return (playerStatus.value.ready = true)
+  },
+  play: () => {
+    console.log('Play')
+  },
+  playing: () => {
+    console.log('playing')
+    playerStatus.value.paused = false
+    playerStatus.value.play = true
+  },
+  duration: (seconds) => {
+    playerStatus.value.duration = seconds
+  },
+  error: (err) => {
+    console.error(err)
+  },
+  timeUpdate: (cur, rem) => {
+    playerStatus.value.curTime = cur
+    playerStatus.value.remaining = rem
+  },
+  loadedData: () => {
+    console.log('loadedData')
+  },
+  volume: (volume) => {
+    playerStatus.value.volume = volume
+  },
+  muted: (state) => {
+    playerStatus.value.muted = state
+  },
+  ended: () => {
+    playerStatus.value.ready = false
+    playerStatus.value.play = false
+  },
+  paused: () => {
+    playerStatus.value.paused = true
+    console.log('paused')
+  }
 }
+
+export { mediaplayer, playerStatus, fnStatus }

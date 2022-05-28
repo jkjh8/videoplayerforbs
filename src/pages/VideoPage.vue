@@ -2,42 +2,19 @@
 import { ref, onMounted } from 'vue'
 import { QMediaPlayer } from '@quasar/quasar-ui-qmediaplayer'
 import '@quasar/quasar-ui-qmediaplayer/src/index.sass'
-import { socket } from 'src/boot/socketio'
+import { ioPlayer } from 'src/boot/socketio'
 import {
   mediaplayer,
-  autoplay,
-  bottomControls,
-  controlDisplayTime,
-  showBigPlayBtn,
-  loop,
-  muted,
-  noControls,
-  volume,
-  showTooltips,
-  source,
-  _file,
-  _ready,
-  _wait,
-  _play
+  playerStatus as ps,
+  fnStatus as fs
 } from 'src/composables/usePlayer'
 
-import {
-  stateReady,
-  statePlaying,
-  stateDuration,
-  stateError,
-  timeUpdate,
-  stateLoadedData,
-  stateVolume,
-  stateMuted,
-  stateEnded,
-  statePaused
-} from 'src/composables/usePlayerState'
+// import { fnStatus as fs } from 'src/composables/usePlayerState'
 
 import { fnPlay, clearSource } from 'src/composables/usePlayerFunctions'
 
 onMounted(() => {
-  socket.on('player', async (args) => {
+  ioPlayer.on('player', async (args) => {
     switch (args.command) {
       case 'updateSource':
         if (_file.value !== args.file) {
@@ -63,40 +40,39 @@ onMounted(() => {
 </script>
 
 <template>
-  <q-page v-if="_file && _file.type.includes('video')" class="bg-black">
+  <!-- <q-page v-if="_file && _file.type.includes('video')" class="bg-black"> -->
+  <q-page>
     <q-media-player
       ref="mediaplayer"
       type="video"
-      :source="source"
-      :autoplay="autoplay"
-      :bottom-controls="bottomControls"
-      :controls-display-time="controlDisplayTime"
-      :loop="loop"
-      :muted="muted"
-      :no-controls="noControls"
-      :show-big-play-button="showBigPlayBtn"
-      :volume="volume"
-      :show-tooltips="showTooltips"
-      @ready="stateReady"
-      @playing="statePlaying"
-      @duration="stateDuration"
-      @ended="stateEnded"
-      @error="stateError"
-      @paused="statePaused"
-      @timeupdate="timeUpdate"
-      @loadeddata="stateLoadedData"
-      @volume="stateVolume"
-      @mute="stateMuted"
+      :source="ps.source"
+      :autoplay="ps.autoplay"
+      :bottom-controls="ps.bottomControls"
+      :controls-display-time="ps.controlDisplayTime"
+      :loop="ps.loop"
+      :muted="ps.muted"
+      :no-controls="ps.noControls"
+      :show-big-play-button="ps.showBigPlayBtn"
+      :volume="ps.volume"
+      :show-tooltips="ps.showTooltips"
+      @ready="fs.ready"
+      @play="fs.play"
+      @playing="fs.playing"
+      @duration="fs.duration"
+      @ended="fs.ended"
+      @error="fs.error"
+      @paused="fs.paused"
+      @timeupdate="fs.timeUpdate"
+      @loadeddata="fs.loadedData"
+      @volume="fs.volume"
+      @mute="fs.muted"
     />
+    {{ ps }}
   </q-page>
-
+  <!--
   <q-page v-else-if="_file && file.type.includes('image')"> image </q-page>
 
-  <q-page
-    v-else
-    class="flex flex-center bg-black text-white"
-    style="width: 100%; height: 100%"
-  >
-    <q-icon name="svguse:icons.svg#logo" size="200px" />
-  </q-page>
+  <q-page v-else class="bg-black text-white">
+    <q-icon class="absolute-center" name="svguse:icons.svg#logo" size="200px" />
+  </q-page> -->
 </template>

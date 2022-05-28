@@ -10,23 +10,7 @@ import {
   columns
 } from 'src/composables/useFiles'
 
-import {
-  mediaplayer,
-  autoplay,
-  bottomControls,
-  controlDisplayTime,
-  showBigPlayBtn,
-  loop,
-  muted,
-  noControls,
-  volume,
-  showTooltips,
-  source,
-  _file,
-  _ready,
-  _wait,
-  _play
-} from 'src/composables/usePlayer'
+import { mediaplayer, playerStatus as ps } from 'src/composables/usePlayer'
 import { callPlayDirect, callClear } from 'src/composables/usePlayerCalls'
 
 import PageName from 'src/components/layout/pageName.vue'
@@ -103,7 +87,6 @@ onMounted(() => {
 
 <template>
   <q-page>
-    file = {{ (_file, _play) }}
     <div class="row no-wrap justify-between items-center">
       <PageName
         class="animate__pulse"
@@ -136,13 +119,15 @@ onMounted(() => {
                 <q-td key="name" :props="props" class="text-left">
                   <div class="row items-center q-gutter-x-sm">
                     <q-icon
-                      v-if="props.row.type.includes('image')"
+                      v-if="props.row.type && props.row.type.includes('image')"
                       name="image"
                       size="sm"
                       color="primary"
                     />
                     <q-icon
-                      v-if="props.row.type.includes('video')"
+                      v-else-if="
+                        props.row.type && props.row.type.includes('video')
+                      "
                       name="videocam"
                       size="sm"
                       color="blue-grey-10"

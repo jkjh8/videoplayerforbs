@@ -1,14 +1,20 @@
 import { boot } from 'quasar/wrappers'
 import io from 'socket.io-client'
 
-const socket = io(`http://${window.location.hostname}:3000`, {
+const ioStatus = io(`http://${window.location.hostname}:3000/status`, {
   reconnectionDelayMax: 5000,
   transports: ['websocket'],
-  autoConnect: true
+  autoConnect: false
+})
+
+const ioPlayer = io(`http://${window.location.hostname}:3000/player`, {
+  reconnectionDelayMax: 5000,
+  transports: ['websocket'],
+  autoConnect: false
 })
 
 export default boot(({ app }) => {
-  app.config.globalProperties.$socketio = socket
+  app.config.globalProperties.$socketio = ioStatus
 })
 
-export { socket }
+export { ioStatus, ioPlayer }

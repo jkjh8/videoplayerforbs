@@ -1,7 +1,7 @@
 <script setup>
 import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
-import { socket } from 'src/boot/socketio'
+import { ioStatus } from 'src/boot/socketio'
 import MenuComponent from 'components/layout/menuComponent'
 
 import { _file, _play } from 'src/composables/usePlayer'
@@ -9,7 +9,7 @@ import { _file, _play } from 'src/composables/usePlayer'
 const router = useRouter()
 
 onBeforeMount(() => {
-  socket.on('source', (file) => {
+  ioStatus.on('source', (file) => {
     if (_file.value !== file.file) {
       _file.value = file.file
       _play.value = false

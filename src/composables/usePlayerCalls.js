@@ -1,14 +1,14 @@
-import { socket } from 'src/boot/socketio'
+import { ioStatus } from 'src/boot/socketio'
 
 function callPlayDirect(file) {
-  socket.emit('playerFunction', {
+  ioStatus.emit('playerFunction', {
     command: 'playDirect',
     file: file
   })
 }
 
 function callClear() {
-  socket.emit('playerFunction', {
+  ioStatus.emit('playerFunction', {
     command: 'clear'
   })
 }
