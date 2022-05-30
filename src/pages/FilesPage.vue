@@ -17,6 +17,7 @@ import PageName from 'src/components/layout/pageName.vue'
 import Upload from 'src/components/dialogs/files/uploadFiles'
 import mkDir from 'src/components/dialogs/files/makeFolder.vue'
 import Confirm from 'src/components/dialogs/chkConfirm'
+import StkRemote from 'src/components/stickyRemote'
 
 import IconBtn from 'src/components/iconBtn'
 import Tooltip from 'src/components/tooltipItem.vue'
@@ -95,9 +96,6 @@ onMounted(() => {
         icon="svguse:icons.svg#diskColor"
       />
       <div>
-        <q-btn round flat color="red" icon="stop" @click="callClear">
-          <Tooltip msg="중지" />
-        </q-btn>
         <q-btn round flat color="yellow" icon="folder" @click="makeFolder">
           <Tooltip msg="폴더생성" />
         </q-btn>
@@ -113,6 +111,7 @@ onMounted(() => {
             :columns="columns"
             :rows="fileWithType"
             :pagination="{ rowsPerPage: 0 }"
+            hide-pagination
           >
             <template #body="props">
               <q-tr :props="props">
@@ -170,11 +169,8 @@ onMounted(() => {
         </q-card-section>
       </q-card>
     </div>
-    <q-page-sticky v-if="_play" position="bottom-right" :offset="[18, 18]">
-      <div class="q-gutter-x-sm">
-        <q-btn fab icon="play_arrow" color="primary" />
-        <q-btn fab icon="stop" color="red-10" />
-      </div>
+    <q-page-sticky v-if="ps.play" position="bottom-right" :offset="[18, 18]">
+      <StkRemote />
     </q-page-sticky>
   </q-page>
 </template>

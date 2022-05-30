@@ -1,8 +1,9 @@
 <script setup>
+// chrome.exe --autoplay-policy=no-user-gesture-required
 import { ref, onMounted } from 'vue'
 import { QMediaPlayer } from '@quasar/quasar-ui-qmediaplayer'
 import '@quasar/quasar-ui-qmediaplayer/src/index.sass'
-import { ioPlayer } from 'src/boot/socketio'
+import { socket } from 'src/boot/socketio'
 import {
   mediaplayer,
   playerStatus as ps,
@@ -11,31 +12,40 @@ import {
 
 // import { fnStatus as fs } from 'src/composables/usePlayerState'
 
-import { fnPlay, clearSource } from 'src/composables/usePlayerFunctions'
+import {
+  fnPlay,
+  fnClear,
+  fnPause,
+  fnSetTime
+} from 'src/composables/usePlayerFunctions'
 
 onMounted(() => {
-  ioPlayer.on('player', async (args) => {
+  socket.on('command', async (args) => {
+    console.log('player function ', args)
     switch (args.command) {
-      case 'updateSource':
-        if (_file.value !== args.file) {
-          _file.value = args.file
-          _play.value = false
-          if (_file.value.type.includes('video')) {
-            source.value = args.file.address
-            await fnPlay()
-          }
-        }
-        break
       case 'play':
-        if (!_play.value) {
+        try {
           await fnPlay()
+        } catch (err) {
+          console.error(err)
         }
         break
       case 'clear':
-        clearSource()
+        fnClear()
+        break
+      case 'pause':
+        fnPause()
+        break
+      case 'setTime':
+        fnSetTime(args.value)
         break
     }
+    console.log('player', args)
   })
+  socket.on('data', (args) => {
+    ps.value = args
+  })
+  socket.connect()
 })
 </script>
 
@@ -45,7 +55,7 @@ onMounted(() => {
     <q-media-player
       ref="mediaplayer"
       type="video"
-      :source="ps.source"
+      :source="ps.file && ps.file.address ? ps.file.address : ''"
       :autoplay="ps.autoplay"
       :bottom-controls="ps.bottomControls"
       :controls-display-time="ps.controlDisplayTime"

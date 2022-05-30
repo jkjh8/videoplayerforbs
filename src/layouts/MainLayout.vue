@@ -1,20 +1,18 @@
 <script setup>
 import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
-import { ioStatus } from 'src/boot/socketio'
+import { socket } from 'src/boot/socketio'
 import MenuComponent from 'components/layout/menuComponent'
 
-import { _file, _play } from 'src/composables/usePlayer'
+import { playerStatus as ps } from 'src/composables/usePlayer'
 
 const router = useRouter()
 
 onBeforeMount(() => {
-  ioStatus.on('source', (file) => {
-    if (_file.value !== file.file) {
-      _file.value = file.file
-      _play.value = false
-    }
+  socket.on('data', (args) => {
+    ps.value = args
   })
+  socket.connect()
 })
 </script>
 

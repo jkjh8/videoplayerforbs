@@ -1,12 +1,11 @@
 <script setup>
 import PageName from 'src/components/layout/pageName.vue'
-import {
-  autoplay,
-  noControls,
-  muted,
-  volume,
-  showBigPlayBtn
-} from 'src/composables/usePlayer'
+import { playerStatus as ps } from 'src/composables/usePlayer'
+import { socket } from '/src/boot/socketio'
+
+function updateStatus() {
+  socket.emit('data', ps.value)
+}
 </script>
 
 <template>
@@ -27,7 +26,10 @@ import {
               <q-item-label caption>미디어 로딩시 자동 재생</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle v-model="autoplay"></q-toggle>
+              <q-toggle
+                v-model="ps.autoplay"
+                @update:model-value="updateStatus"
+              ></q-toggle>
             </q-item-section>
           </q-item>
 
@@ -37,7 +39,10 @@ import {
               <q-item-label caption>화면 중앙 플레이 버튼 표시</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle v-model="showBigPlayBtn"></q-toggle>
+              <q-toggle
+                v-model="ps.showBigPlayBtn"
+                @update:model-value="updateStatus"
+              ></q-toggle>
             </q-item-section>
           </q-item>
 
@@ -47,7 +52,10 @@ import {
               <q-item-label caption>컨트롤 화면 숨기기</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle v-model="noControls"></q-toggle>
+              <q-toggle
+                v-model="ps.noControls"
+                @update:model-value="updateStatus"
+              ></q-toggle>
             </q-item-section>
           </q-item>
 
@@ -57,7 +65,10 @@ import {
               <q-item-label caption>오디오 뮤트</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-toggle v-model="muted"></q-toggle>
+              <q-toggle
+                v-model="ps.muted"
+                @update:model-value="updateStatus"
+              ></q-toggle>
             </q-item-section>
           </q-item>
 
@@ -68,12 +79,13 @@ import {
             </q-item-section>
             <q-item-section side>
               <q-knob
-                v-model="volume"
+                v-model="ps.volume"
                 class="q-mr-sm"
                 show-value
                 size="2rem"
                 :thickness="0.3"
                 color="primary"
+                @update:model-value="updateStatus"
               ></q-knob>
             </q-item-section>
           </q-item>

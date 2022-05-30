@@ -1,19 +1,15 @@
-import { ref, reactive } from 'vue'
-
+import { ref, computed } from 'vue'
+import { socket } from 'src/boot/socketio'
 const mediaplayer = ref(null)
 
 const playerStatus = ref({
   autoplay: false,
-  bottomControls: false,
-  controlDisplayTime: ref(2000),
-  showBigPlayBtn: true,
+  showBigPlayBtn: false,
   loop: false,
   muted: false,
-  noControls: false,
+  noControls: true,
   volume: 60,
-  showTooltips: false,
-  source:
-    'http://www.peach.themazzone.com/durian/movies/sintel-2048-surround.mp4',
+  playmode: 'Single',
   duration: 0,
   file: null,
   curTime: 0,
@@ -26,18 +22,24 @@ const playerStatus = ref({
 
 const fnStatus = {
   ready: () => {
-    return (playerStatus.value.ready = true)
+    playerStatus.value.ready = true
+    console.log('ready')
+    socket.emit('data', playerStatus.value)
   },
   play: () => {
+    playerStatus.value.play = true
     console.log('Play')
+    socket.emit('data', playerStatus.value)
   },
   playing: () => {
-    console.log('playing')
     playerStatus.value.paused = false
     playerStatus.value.play = true
+    console.log('playing')
+    socket.emit('data', playerStatus.value)
   },
   duration: (seconds) => {
     playerStatus.value.duration = seconds
+    socket.emit('data', playerStatus.value)
   },
   error: (err) => {
     console.error(err)
@@ -45,23 +47,29 @@ const fnStatus = {
   timeUpdate: (cur, rem) => {
     playerStatus.value.curTime = cur
     playerStatus.value.remaining = rem
+    socket.emit('data', playerStatus.value)
   },
   loadedData: () => {
     console.log('loadedData')
+    socket.emit('data', playerStatus.value)
   },
   volume: (volume) => {
     playerStatus.value.volume = volume
+    socket.emit('data', playerStatus.value)
   },
   muted: (state) => {
     playerStatus.value.muted = state
+    socket.emit('data', playerStatus.value)
   },
   ended: () => {
     playerStatus.value.ready = false
     playerStatus.value.play = false
+    socket.emit('data', playerStatus.value)
   },
   paused: () => {
     playerStatus.value.paused = true
     console.log('paused')
+    socket.emit('data', playerStatus.value)
   }
 }
 
