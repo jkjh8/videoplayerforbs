@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { api } from 'src/boot/axios'
 
 const playlist = ref([])
@@ -8,7 +8,7 @@ async function getPlaylist() {
   const r = await api.get('/playlist')
   const pl = r.data.playlist
   for (let i = 0; i < pl.length; i++) {
-    playlist.value.push({ ...pl[i], index: i + 1 })
+    playlist.value.push({ ...pl[i] })
   }
 }
 

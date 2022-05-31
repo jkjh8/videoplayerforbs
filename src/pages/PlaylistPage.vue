@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useQuasar, date, format } from 'quasar'
 import { api } from 'src/boot/axios'
-import { playlist, getPlaylist, columns } from 'src/composables/usePlaylist'
+import { playlist, getPlaylist } from 'src/composables/usePlaylist'
 
 import { mediaplayer, playerStatus as ps } from 'src/composables/usePlayer'
 import { callPlayDirect, callClear } from 'src/composables/usePlayerCalls'
@@ -11,6 +11,7 @@ import PageName from 'src/components/layout/pageName.vue'
 import Confirm from 'src/components/dialogs/chkConfirm'
 import AddPlaylist from 'src/components/dialogs/playlist/addPlaylist.vue'
 import StkRemote from 'src/components/stickyRemote'
+import Draggable from 'vuedraggable'
 
 import IconBtn from 'src/components/iconBtn'
 import Tooltip from 'src/components/tooltipItem.vue'
@@ -23,55 +24,28 @@ const $q = useQuasar()
 function fnAddPlaylist() {
   $q.dialog({
     component: AddPlaylist
-  }).onOk(() => {
-    $q.loading.show()
-    getFiles()
-    $q.loading.hide()
+  }).onOk(async (addList) => {
+    for (let i = 0; i < addList.length; i++) {
+      playlist.value.push({ ...addList[i], index: playlist.value.length })
+    }
+    await api.put('/playlist', { playlist: playlist.value })
   })
 }
 
-function makeFolder() {
-  $q.dialog({
-    component: mkDir
-  }).onOk(async (name) => {
-    $q.loading.show()
-    try {
-      await api.get(`/files/mkdir?name=${name}`)
-      getFiles()
-      $q.loading.hide()
-    } catch (err) {
-      $q.loading.hide()
-      console.error(err)
+function fnDeletePlaylistItem(item) {
+  for (let i = 0; i < playlist.value.length; i++) {
+    if (item === playlist.value[i]) {
+      playlist.value.splice(i, 1)
+      return fnEndDrag()
     }
-  })
+  }
 }
 
-function deleteFile(file) {
-  $q.dialog({
-    component: Confirm,
-    componentProps: {
-      icon: 'delete',
-      iconColor: 'white',
-      color: 'red',
-      title: '파일 삭제',
-      message: `${file.name} 파일을 삭제 합니다.`
-    }
-  }).onOk(async () => {
-    $q.loading.show()
-    try {
-      await api.get(`/files/deleteFile?name=${encodeURIComponent(file.name)}`)
-      getFiles()
-      $q.loading.hide()
-    } catch (err) {
-      $q.loading.hide()
-      notifyError({
-        message: '파일 삭제 중 오류가 발생하였습니다.',
-        caption:
-          '잠시후에 다시 시도해 주세요. 오류가 계속되면 관리자에게 문의 해주세요.'
-      })
-      console.error(err)
-    }
+async function fnEndDrag() {
+  playlist.value.forEach((item, idx) => {
+    item.index = idx
   })
+  await api.put('/playlist', { playlist: playlist.value })
 }
 
 onMounted(() => {
@@ -104,67 +78,52 @@ onMounted(() => {
       </div>
     </div>
     <div class="row justify-center q-pt-md">
-      <q-card style="width: 100%">
+      <q-card style="min-width: 500px">
         <q-card-section class="q-pa-none">
-          <q-table
-            :columns="columns"
-            :rows="playlist"
-            :pagination="{ rowsPerPage: 0 }"
-            hide-pagination
-          >
-            <template #body="props">
-              <q-tr :props="props">
-                <q-td key="name" :props="props" class="text-left">
-                  <div class="row items-center q-gutter-x-sm">
-                    <q-icon
-                      v-if="props.row.type && props.row.type.includes('image')"
-                      name="image"
+          <draggable v-model="playlist" item-key="index" @end="fnEndDrag">
+            <template #item="{ element }">
+              <q-item style="border: 0.5px solid #efefef" clickable>
+                <q-item-section avatar>
+                  <q-avatar
+                    round
+                    color="primary"
+                    text-color="white"
+                    size="sm"
+                    >{{ element.index + 1 }}</q-avatar
+                  >
+                </q-item-section>
+                <q-item-section>
+                  <q-item-label>
+                    {{ element.name }}
+                  </q-item-label>
+                  <q-item-label caption>
+                    <a :href="element.address" target="_blank">
+                      {{ element.address }}
+                    </a>
+                  </q-item-label>
+                </q-item-section>
+                <q-item-section side>
+                  <div class="row no-wrap">
+                    <q-btn
+                      round
+                      flat
+                      icon="play_arrow"
                       size="sm"
                       color="primary"
-                    />
-                    <q-icon
-                      v-else-if="
-                        props.row.type && props.row.type.includes('video')
-                      "
-                      name="videocam"
+                    ></q-btn>
+                    <q-btn
+                      round
+                      flat
+                      icon="delete"
                       size="sm"
-                      color="blue-grey-10"
-                    />
-                    <div>
-                      {{ props.row.name }}
-                    </div>
+                      color="red-10"
+                      @click.prevent.stop="fnDeletePlaylistItem(element)"
+                    ></q-btn>
                   </div>
-                </q-td>
-                <q-td key="size" :props="props">
-                  {{ format.humanStorageSize(props.row.size) }}
-                </q-td>
-                <q-td key="createdAt" :props="props">
-                  {{
-                    date.formatDate(
-                      props.row.createdAt,
-                      'YYYY-MM-DD hh:mm:ss a'
-                    )
-                  }}
-                </q-td>
-                <q-td key="actions" :props="props">
-                  <div class="q-gutter-x-sm">
-                    <IconBtn
-                      name="play_arrow"
-                      msg="재생"
-                      @click="callPlayDirect(props.row)"
-                    />
-                    <IconBtn
-                      name="delete"
-                      color="red"
-                      size="xs"
-                      msg="삭제"
-                      @click="deleteFile(props.row)"
-                    />
-                  </div>
-                </q-td>
-              </q-tr>
+                </q-item-section>
+              </q-item>
             </template>
-          </q-table>
+          </draggable>
         </q-card-section>
       </q-card>
     </div>

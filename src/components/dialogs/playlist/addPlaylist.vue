@@ -8,38 +8,44 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent()
 
 const selected = ref([])
+const filter = ref('')
 
 onMounted(() => {
   getFiles()
+  selected.value = []
 })
 </script>
 
 <template>
   <q-dialog ref="dialogRef" persistent @hide="onDialogHide">
-    <q-card class="q-dialog-plugin" style="border-radius: 8px">
+    <q-card class="q-dialog-plugin" style="max-width: 1200px; width: 600px">
       <q-card-section
-        class="row no-wrap bg-primary text-white"
+        class="row no-wrap justify-between bg-primary text-white"
         style="padding: 0.7rem"
       >
-        <q-icon class="q-mr-md" name="folder" size="sm" />
-        <div>파일 선택</div>
+        <div class="row no-wrap items-center">
+          <q-icon class="q-mr-md" name="folder" size="sm" />
+          <div>파일 선택</div>
+        </div>
+        <q-input v-model="filter" dense filled dark label="Search"></q-input>
       </q-card-section>
 
       <q-card-section class="q-mt-md">
         <div>
-          <q-table
-            v-model:selected="selected"
-            :columns="columnsAdd"
-            :rows="fileWithType"
-            row-key="index"
-            selection="multiple"
-          >
-            <template #body="props">
-              <q-tr :props="props">
-                <q-td key="selected" :props="props">
-                  <q-select v-model="scope.selected" />
-                </q-td>
-                <q-td key="name" :props="props" class="text-left">
+          <q-scroll-area style="height: 350px">
+            <q-table
+              v-model:selected="selected"
+              :columns="columnsAdd"
+              :rows="fileWithType"
+              row-key="name"
+              selection="multiple"
+              dense
+              :filter="filter"
+              hide-pagination
+              :pagination="{ rowsPerPage: 0 }"
+            >
+              <template #body-cell-name="props">
+                <q-td :props="props" class="text-left">
                   <div class="row items-center q-gutter-x-sm">
                     <q-icon
                       v-if="props.row.type && props.row.type.includes('image')"
@@ -60,12 +66,14 @@ onMounted(() => {
                     </div>
                   </div>
                 </q-td>
-                <q-td key="size" :props="props">
+              </template>
+              <template #body-cell-size="props">
+                <q-td :props="props">
                   {{ format.humanStorageSize(props.row.size) }}
                 </q-td>
-              </q-tr>
-            </template>
-          </q-table>
+              </template>
+            </q-table>
+          </q-scroll-area>
         </div>
       </q-card-section>
 
@@ -83,7 +91,7 @@ onMounted(() => {
           class="text-primary"
           flat
           rounded
-          @click="onDialogOK"
+          @click="onDialogOK(selected)"
         />
       </q-card-actions>
     </q-card>
