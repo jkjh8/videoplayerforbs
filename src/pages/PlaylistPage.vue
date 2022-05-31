@@ -78,11 +78,14 @@ onMounted(() => {
       </div>
     </div>
     <div class="row justify-center q-pt-md">
-      <q-card style="min-width: 500px">
+      <q-card style="min-width: 500px" flat>
         <q-card-section class="q-pa-none">
           <draggable v-model="playlist" item-key="index" @end="fnEndDrag">
             <template #item="{ element }">
-              <q-item style="border: 0.5px solid #efefef" clickable>
+              <q-item
+                style="border: 0.5px solid #efefef; margin: 5px"
+                clickable
+              >
                 <q-item-section avatar>
                   <q-avatar
                     round
