@@ -10,7 +10,7 @@ const router = useRouter()
 
 onBeforeMount(() => {
   socket.on('data', (args) => {
-    ps.value = args
+    ps.value = { ...args }
   })
   socket.connect()
 })

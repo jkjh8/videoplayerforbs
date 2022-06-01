@@ -33,18 +33,18 @@ import IconBtn from 'src/components/iconBtn'
       <q-card-section>
         <div class="row no-wrap items-center q-gutter-x-md">
           <div>
-            {{ hms(ps.curTime) }}
+            {{ hms(ps.curTime / 1000) }}
           </div>
           <q-slider
             v-model="ps.curTime"
             :min="0"
             :max="ps.duration"
             label
-            :label-value="hms(ps.curTime)"
+            :label-value="hms(ps.curTime / 1000)"
             @update:model-value="callChangeTime"
           ></q-slider>
           <div>
-            {{ hms(ps.duration) }}
+            {{ hms(ps.duration / 1000) }}
           </div>
         </div>
 

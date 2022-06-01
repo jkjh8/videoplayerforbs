@@ -169,7 +169,11 @@ onMounted(() => {
         </q-card-section>
       </q-card>
     </div>
-    <q-page-sticky v-if="ps.play" position="bottom-right" :offset="[18, 18]">
+    <q-page-sticky
+      v-if="ps.playing === 1"
+      position="bottom-right"
+      :offset="[18, 18]"
+    >
       <StkRemote />
     </q-page-sticky>
   </q-page>

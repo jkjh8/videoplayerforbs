@@ -12,15 +12,16 @@ async function callPlayDirect(file) {
     console.log(playTimeout)
     const r = await api.post('/files/exist', file)
     if (r.data.result) {
-      ps.value.file = file
-      if (ps.value.autoplay) {
-        socket.emit('data', ps.value)
-      } else {
-        socket.emit('data', { ...ps.value, autoplay: true })
-        playTimeout = setTimeout(() => {
-          socket.emit('data', { ...ps.value, autoplay: false })
-        }, 500)
-      }
+      socket.emit('command', { command: 'play', file: file })
+      // ps.value.file = file
+      // if (ps.value.autoplay) {
+      //   socket.emit('data', ps.value)
+      // } else {
+      //   socket.emit('data', { ...ps.value, autoplay: true })
+      //   playTimeout = setTimeout(() => {
+      //     socket.emit('data', { ...ps.value, autoplay: false })
+      //   }, 500)
+      // }
     } else {
       notifyWarn({ message: '파일이 존재 하지 않습니다' })
     }
@@ -63,13 +64,16 @@ function callPause() {
 
 function callClear() {
   socket.emit('command', {
-    command: 'clear'
+    command: 'stop'
   })
 }
 
 function callChangeTime(time) {
-  console.log(time)
-  socket.emit('command', { command: 'setTime', value: time })
+  console.log(time, ps)
+  socket.emit('command', {
+    command: 'setposition',
+    value: time / ps.value.duration
+  })
 }
 
 export {
