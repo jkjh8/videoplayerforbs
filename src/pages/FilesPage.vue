@@ -10,8 +10,11 @@ import {
   columns
 } from 'src/composables/useFiles'
 
-import { mediaplayer, playerStatus as ps } from 'src/composables/usePlayer'
-import { callPlayDirect, callClear } from 'src/composables/usePlayerCalls'
+import {
+  playerStatus as ps,
+  setPlayPause,
+  openFile
+} from 'src/composables/usePlayer'
 
 import PageName from 'src/components/layout/pageName.vue'
 import Upload from 'src/components/dialogs/files/uploadFiles'
@@ -116,7 +119,7 @@ onMounted(() => {
             <template #body="props">
               <q-tr :props="props">
                 <q-td key="name" :props="props" class="text-left">
-                  <div class="row items-center q-gutter-x-sm">
+                  <div class="row no-wrap items-center q-gutter-x-sm">
                     <q-icon
                       v-if="props.row.type && props.row.type.includes('image')"
                       name="image"
@@ -152,7 +155,7 @@ onMounted(() => {
                     <IconBtn
                       name="play_arrow"
                       msg="재생"
-                      @click="callPlayDirect(props.row)"
+                      @click="openFile(props.row)"
                     />
                     <IconBtn
                       name="delete"
@@ -170,7 +173,10 @@ onMounted(() => {
       </q-card>
     </div>
     <q-page-sticky
-      v-if="ps.playing === 1"
+      v-if="
+        (ps.status && ps.status.includes('Playing')) ||
+        (ps.status && ps.status.includes('Paused'))
+      "
       position="bottom-right"
       :offset="[18, 18]"
     >

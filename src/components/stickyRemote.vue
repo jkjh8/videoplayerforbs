@@ -1,6 +1,9 @@
 <script setup>
-import { playerStatus as ps } from 'src/composables/usePlayer'
-import { callPlay, callClear, callPause } from 'src/composables/usePlayerCalls'
+import {
+  playerStatus as ps,
+  setPlayPause,
+  setStop
+} from 'src/composables/usePlayer'
 </script>
 
 <template>
@@ -10,9 +13,9 @@ import { callPlay, callClear, callPause } from 'src/composables/usePlayerCalls'
       fab
       icon="play_arrow"
       color="primary"
-      @click="callPlay"
+      @click="setPlayPause"
     />
-    <q-btn v-else fab icon="pause" color="yellow" @click="callPause" />
-    <q-btn fab icon="stop" color="red-10" @click="callClear" />
+    <q-btn v-else fab icon="pause" color="yellow" @click="setPlayPause" />
+    <q-btn fab icon="stop" color="red-10" @click="setStop" />
   </div>
 </template>

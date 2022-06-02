@@ -1,9 +1,9 @@
 <script setup>
+import { onMounted } from 'vue'
 import { hms } from 'src/composables/useTime'
 import { playerStatus as ps } from 'src/composables/usePlayer'
 import {
   callPlay,
-  callPause,
   callClear,
   callChangeTime
 } from 'src/composables/usePlayerCalls'
@@ -33,25 +33,25 @@ import IconBtn from 'src/components/iconBtn'
       <q-card-section>
         <div class="row no-wrap items-center q-gutter-x-md">
           <div>
-            {{ hms(ps.curTime / 1000) }}
+            {{ hms(ps.curTime) }}
           </div>
           <q-slider
-            v-model="ps.curTime"
+            v-model="ps.position"
             :min="0"
-            :max="ps.duration"
+            :max="1000"
             label
-            :label-value="hms(ps.curTime / 1000)"
+            :label-value="hms(ps.curTime)"
             @update:model-value="callChangeTime"
           ></q-slider>
           <div>
-            {{ hms(ps.duration / 1000) }}
+            {{ hms(ps.duration) }}
           </div>
         </div>
 
         <div class="row no-wrap">
           <div>
             <q-btn
-              v-if="ps.paused || !ps.play"
+              v-if="!(ps.status && ps.status.includes('Playing'))"
               icon="play_arrow"
               color="primary"
               flat
@@ -64,7 +64,7 @@ import IconBtn from 'src/components/iconBtn'
               color="yellow"
               flat
               round
-              @click="callPause"
+              @click="callPlay"
             />
           </div>
           <q-btn icon="stop" color="red-10" flat round @click="callClear" />

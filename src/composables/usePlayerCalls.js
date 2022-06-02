@@ -5,23 +5,11 @@ import { socket } from 'src/boot/socketio'
 import useNotify from 'src/composables/useNotify'
 const { notifyWarn, notifyError } = useNotify()
 
-let playTimeout
-
 async function callPlayDirect(file) {
   try {
-    console.log(playTimeout)
     const r = await api.post('/files/exist', file)
     if (r.data.result) {
       socket.emit('command', { command: 'play', file: file })
-      // ps.value.file = file
-      // if (ps.value.autoplay) {
-      //   socket.emit('data', ps.value)
-      // } else {
-      //   socket.emit('data', { ...ps.value, autoplay: true })
-      //   playTimeout = setTimeout(() => {
-      //     socket.emit('data', { ...ps.value, autoplay: false })
-      //   }, 500)
-      // }
     } else {
       notifyWarn({ message: '파일이 존재 하지 않습니다' })
     }
@@ -57,22 +45,19 @@ async function callLoadFile(file) {
 function callPlay() {
   socket.emit('command', { command: 'play' })
 }
-
-function callPause() {
-  socket.emit('command', { command: 'pause' })
+function callClear() {
+  socket.emit('command', { command: 'stop' })
 }
 
-function callClear() {
-  socket.emit('command', {
-    command: 'stop'
-  })
+function callMute(value) {
+  socket.emit('command', { command: 'mute', value: value })
 }
 
 function callChangeTime(time) {
   console.log(time, ps)
   socket.emit('command', {
     command: 'setposition',
-    value: time / ps.value.duration
+    value: ps.value.position
   })
 }
 
@@ -80,7 +65,7 @@ export {
   callPlayDirect,
   callPlay,
   callClear,
-  callPause,
   callChangeTime,
-  callLoadFile
+  callLoadFile,
+  callMute
 }

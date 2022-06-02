@@ -4,7 +4,7 @@ import { useQuasar, date, format } from 'quasar'
 import { api } from 'src/boot/axios'
 import { playlist, getPlaylist } from 'src/composables/usePlaylist'
 
-import { mediaplayer, playerStatus as ps } from 'src/composables/usePlayer'
+import { playerStatus as ps } from 'src/composables/usePlayer'
 import { callPlayDirect, callClear } from 'src/composables/usePlayerCalls'
 
 import PageName from 'src/components/layout/pageName.vue'

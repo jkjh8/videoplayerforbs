@@ -1,76 +1,43 @@
 import { ref, computed } from 'vue'
 import { socket } from 'src/boot/socketio'
-const mediaplayer = ref(null)
 
-const playerStatus = ref({
-  autoplay: false,
-  showBigPlayBtn: false,
-  loop: false,
-  muted: false,
-  noControls: true,
-  volume: 60,
-  playmode: 'Single',
-  duration: 0,
-  file: null,
-  curTime: 0,
-  remaining: 0,
-  ready: false,
-  wait: false,
-  play: false,
-  paused: false
-})
+const playerStatus = ref({})
 
-const fnStatus = {
-  ready: () => {
-    playerStatus.value.ready = true
-    console.log('ready')
-    socket.emit('data', playerStatus.value)
-  },
-  play: () => {
-    playerStatus.value.play = true
-    console.log('Play')
-    socket.emit('data', playerStatus.value)
-  },
-  playing: () => {
-    playerStatus.value.paused = false
-    playerStatus.value.play = true
-    console.log('playing')
-    socket.emit('data', playerStatus.value)
-  },
-  duration: (seconds) => {
-    playerStatus.value.duration = seconds
-    socket.emit('data', playerStatus.value)
-  },
-  error: (err) => {
-    console.error(err)
-  },
-  timeUpdate: (cur, rem) => {
-    playerStatus.value.curTime = cur
-    playerStatus.value.remaining = rem
-    socket.emit('data', playerStatus.value)
-  },
-  loadedData: () => {
-    console.log('loadedData')
-    socket.emit('data', playerStatus.value)
-  },
-  volume: (volume) => {
-    playerStatus.value.volume = volume
-    socket.emit('data', playerStatus.value)
-  },
-  muted: (state) => {
-    playerStatus.value.muted = state
-    socket.emit('data', playerStatus.value)
-  },
-  ended: () => {
-    playerStatus.value.ready = false
-    playerStatus.value.play = false
-    socket.emit('data', playerStatus.value)
-  },
-  paused: () => {
-    playerStatus.value.paused = true
-    console.log('paused')
-    socket.emit('data', playerStatus.value)
-  }
+function setPlayPause(file) {
+  socket.emit('command', { command: 'playPause' })
 }
 
-export { mediaplayer, playerStatus, fnStatus }
+function setStop() {
+  socket.emit('command', { command: 'stop' })
+}
+
+function openFile(file) {
+  socket.emit('command', { command: 'open_file', file: file })
+}
+
+function setPosition(position) {
+  socket.emit('command', { command: 'setPosition', value: position })
+}
+
+function setFullscreen(value) {
+  socket.emit('command', { command: 'setFullscreen', value: value })
+}
+
+function setVolume(value) {
+  socket.emit('command', { command: 'set_volume', value: value })
+}
+
+function setMute(value) {
+  socket.emit('command', { command: 'set_mute', value: value })
+}
+
+export {
+  playerStatus,
+  setPlayPause,
+  setStop,
+  openFile,
+  setPosition,
+  setFullscreen,
+  setVolume,
+  setMute
+}

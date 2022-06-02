@@ -9,7 +9,8 @@ import { playerStatus as ps } from 'src/composables/usePlayer'
 const router = useRouter()
 
 onBeforeMount(() => {
-  socket.on('data', (args) => {
+  socket.on('status', (args) => {
+    console.log(args)
     ps.value = { ...args }
   })
   socket.connect()

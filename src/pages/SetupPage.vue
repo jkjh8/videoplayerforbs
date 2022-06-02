@@ -1,6 +1,10 @@
 <script setup>
 import PageName from 'src/components/layout/pageName.vue'
-import { playerStatus as ps } from 'src/composables/usePlayer'
+import {
+  playerStatus as ps,
+  setVolume,
+  setMute
+} from 'src/composables/usePlayer'
 import { socket } from '/src/boot/socketio'
 
 function updateStatus() {
@@ -22,52 +26,13 @@ function updateStatus() {
         <q-list separator>
           <q-item>
             <q-item-section>
-              <q-item-label>AUTO PLAY</q-item-label>
-              <q-item-label caption>미디어 로딩시 자동 재생</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-toggle
-                v-model="ps.autoplay"
-                @update:model-value="updateStatus"
-              ></q-toggle>
-            </q-item-section>
-          </q-item>
-
-          <q-item>
-            <q-item-section>
-              <q-item-label>SHOW BIG PLAY BUTTON</q-item-label>
-              <q-item-label caption>화면 중앙 플레이 버튼 표시</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-toggle
-                v-model="ps.showBigPlayBtn"
-                @update:model-value="updateStatus"
-              ></q-toggle>
-            </q-item-section>
-          </q-item>
-
-          <q-item>
-            <q-item-section>
-              <q-item-label>HIDE CONTROLS</q-item-label>
-              <q-item-label caption>컨트롤 화면 숨기기</q-item-label>
-            </q-item-section>
-            <q-item-section side>
-              <q-toggle
-                v-model="ps.noControls"
-                @update:model-value="updateStatus"
-              ></q-toggle>
-            </q-item-section>
-          </q-item>
-
-          <q-item>
-            <q-item-section>
               <q-item-label>MUTE</q-item-label>
               <q-item-label caption>오디오 뮤트</q-item-label>
             </q-item-section>
             <q-item-section side>
               <q-toggle
-                v-model="ps.muted"
-                @update:model-value="updateStatus"
+                v-model="ps.mute"
+                @update:model-value="setMute"
               ></q-toggle>
             </q-item-section>
           </q-item>
@@ -85,8 +50,21 @@ function updateStatus() {
                 size="2rem"
                 :thickness="0.3"
                 color="primary"
-                @update:model-value="updateStatus"
+                @update:model-value="setVolume"
               ></q-knob>
+            </q-item-section>
+          </q-item>
+
+          <q-item>
+            <q-item-section>
+              <q-item-label>FULL SCREEN</q-item-label>
+              <q-item-label caption>전체 화면 전환</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-toggle
+                v-model="ps.mute"
+                @update:model-value="updateStatus"
+              ></q-toggle>
             </q-item-section>
           </q-item>
         </q-list>
