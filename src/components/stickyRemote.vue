@@ -15,7 +15,7 @@ import {
       color="primary"
       @click="setPlayPause"
     />
-    <q-btn v-else fab icon="pause" color="yellow" @click="setPlayPause" />
+    <q-btn v-else fab icon="pause" color="yellow-8" @click="setPlayPause" />
     <q-btn fab icon="stop" color="red-10" @click="setStop" />
   </div>
 </template>

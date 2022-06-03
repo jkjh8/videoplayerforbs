@@ -4,8 +4,7 @@ import { useQuasar, date, format } from 'quasar'
 import { api } from 'src/boot/axios'
 import { playlist, getPlaylist } from 'src/composables/usePlaylist'
 
-import { playerStatus as ps } from 'src/composables/usePlayer'
-import { callPlayDirect, callClear } from 'src/composables/usePlayerCalls'
+import { playerStatus as ps, openFile } from 'src/composables/usePlayer'
 
 import PageName from 'src/components/layout/pageName.vue'
 import Confirm from 'src/components/dialogs/chkConfirm'
@@ -113,6 +112,7 @@ onMounted(() => {
                       icon="play_arrow"
                       size="sm"
                       color="primary"
+                      @click.prevent.stop="openFile(element)"
                     ></q-btn>
                     <q-btn
                       round
@@ -130,7 +130,14 @@ onMounted(() => {
         </q-card-section>
       </q-card>
     </div>
-    <q-page-sticky v-if="ps.play" position="bottom-right" :offset="[18, 18]">
+    <q-page-sticky
+      v-if="
+        (ps.status && ps.status.includes('Playing')) ||
+        (ps.status && ps.status.includes('Paused'))
+      "
+      position="bottom-right"
+      :offset="[18, 18]"
+    >
       <StkRemote />
     </q-page-sticky>
   </q-page>

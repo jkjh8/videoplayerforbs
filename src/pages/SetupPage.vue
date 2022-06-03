@@ -1,15 +1,18 @@
 <script setup>
+import { onMounted } from 'vue'
 import PageName from 'src/components/layout/pageName.vue'
 import {
   playerStatus as ps,
   setVolume,
-  setMute
+  setMute,
+  setFullscreen,
+  getStatus
 } from 'src/composables/usePlayer'
 import { socket } from '/src/boot/socketio'
 
-function updateStatus() {
-  socket.emit('data', ps.value)
-}
+onMounted(() => {
+  getStatus()
+})
 </script>
 
 <template>
@@ -43,15 +46,24 @@ function updateStatus() {
               <q-item-label caption>오디오 볼륨</q-item-label>
             </q-item-section>
             <q-item-section side>
-              <q-knob
-                v-model="ps.volume"
-                class="q-mr-sm"
-                show-value
-                size="2rem"
-                :thickness="0.3"
-                color="primary"
-                @update:model-value="setVolume"
-              ></q-knob>
+              <div class="row no-wrap items-center q-gutter-x-md">
+                <q-slider
+                  v-model="ps.volume"
+                  style="width: 100px"
+                  :min="0"
+                  :max="100"
+                  label
+                  color="primary"
+                  @update:model-value="setVolume"
+                />
+                <div>{{ ps.volume }}</div>
+                <!-- <input
+                  v-model="ps.volume"
+                  type="number"
+                  style="width: 50px"
+                  @update:model-value="setVolume"
+                /> -->
+              </div>
             </q-item-section>
           </q-item>
 
@@ -62,8 +74,8 @@ function updateStatus() {
             </q-item-section>
             <q-item-section side>
               <q-toggle
-                v-model="ps.mute"
-                @update:model-value="updateStatus"
+                v-model="ps.fullscreen"
+                @update:model-value="setFullscreen"
               ></q-toggle>
             </q-item-section>
           </q-item>

@@ -16,11 +16,11 @@ function openFile(file) {
 }
 
 function setPosition(position) {
-  socket.emit('command', { command: 'setPosition', value: position })
+  socket.emit('command', { command: 'set_position', value: position })
 }
 
 function setFullscreen(value) {
-  socket.emit('command', { command: 'setFullscreen', value: value })
+  socket.emit('command', { command: 'set_fullscreen', value: value })
 }
 
 function setVolume(value) {
@@ -31,6 +31,10 @@ function setMute(value) {
   socket.emit('command', { command: 'set_mute', value: value })
 }
 
+function getStatus() {
+  socket.emit('command', { command: 'get_status' })
+}
+
 export {
   playerStatus,
   setPlayPause,
@@ -39,5 +43,6 @@ export {
   setPosition,
   setFullscreen,
   setVolume,
-  setMute
+  setMute,
+  getStatus
 }

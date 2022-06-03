@@ -1,12 +1,12 @@
 <script setup>
 import { onMounted } from 'vue'
 import { hms } from 'src/composables/useTime'
-import { playerStatus as ps } from 'src/composables/usePlayer'
 import {
-  callPlay,
-  callClear,
-  callChangeTime
-} from 'src/composables/usePlayerCalls'
+  playerStatus as ps,
+  setPlayPause,
+  setPosition,
+  setStop
+} from 'src/composables/usePlayer'
 import IconBtn from 'src/components/iconBtn'
 </script>
 
@@ -41,7 +41,7 @@ import IconBtn from 'src/components/iconBtn'
             :max="1000"
             label
             :label-value="hms(ps.curTime)"
-            @update:model-value="callChangeTime"
+            @update:model-value="setPosition"
           ></q-slider>
           <div>
             {{ hms(ps.duration) }}
@@ -56,7 +56,7 @@ import IconBtn from 'src/components/iconBtn'
               color="primary"
               flat
               round
-              @click="callPlay"
+              @click="setPlayPause"
             />
             <q-btn
               v-else
@@ -64,10 +64,10 @@ import IconBtn from 'src/components/iconBtn'
               color="yellow"
               flat
               round
-              @click="callPlay"
+              @click="setPlayPause"
             />
           </div>
-          <q-btn icon="stop" color="red-10" flat round @click="callClear" />
+          <q-btn icon="stop" color="red-10" flat round @click="setStop" />
         </div>
       </q-card-section>
     </q-card>
