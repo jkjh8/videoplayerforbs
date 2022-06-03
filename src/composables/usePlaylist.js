@@ -1,5 +1,6 @@
 import { ref } from 'vue'
 import { api } from 'src/boot/axios'
+import { socket } from 'src/boot/socketio'
 
 const playlist = ref([])
 
@@ -10,6 +11,8 @@ async function getPlaylist() {
   for (let i = 0; i < pl.length; i++) {
     playlist.value.push({ ...pl[i] })
   }
+  console.log(playlist.value)
+  socket.emit('command', { command: 'playlist', playlist: playlist.value })
 }
 
 const columns = [

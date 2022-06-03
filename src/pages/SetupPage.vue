@@ -6,7 +6,8 @@ import {
   setVolume,
   setMute,
   setFullscreen,
-  getStatus
+  getStatus,
+  setPlayMode
 } from 'src/composables/usePlayer'
 import { socket } from '/src/boot/socketio'
 
@@ -27,6 +28,22 @@ onMounted(() => {
     <q-card style="width: 100%">
       <q-card-section class="q-py-none">
         <q-list separator>
+          <q-item>
+            <q-item-section>
+              <q-item-label>PLAY MODE</q-item-label>
+              <q-item-label caption>플레이 모드 설정</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-select
+                :options="['Normal', 'Playlist']"
+                v-model="ps.play_mode"
+                filled
+                dense
+                @update:model-value="setPlayMode"
+              ></q-select>
+            </q-item-section>
+          </q-item>
+
           <q-item>
             <q-item-section>
               <q-item-label>MUTE</q-item-label>

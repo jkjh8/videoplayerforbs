@@ -6,35 +6,35 @@ const props = defineProps({
   color: String,
   msg: String
 })
-const isHover = ref(false)
+const clicked = ref(false)
 const emit = defineEmits(['click'])
 
 function onClick() {
-  isHover.value = true
+  clicked.value = true
   emit('click')
   setTimeout(() => {
-    isHover.value = false
+    clicked.value = false
   }, 1000)
 }
 </script>
 
 <template>
   <q-icon
-    :class="isHover ? 'animate__animated animate__heartBeat' : ''"
+    :class="clicked ? 'animate__animated animate__heartBeat' : ''"
     style="cursor: pointer"
     :name="props.name"
     :size="props.size ?? 'sm'"
     :color="props.color ?? 'primary'"
     @click.prevent.stop="onClick"
   >
-    <q-tooltip
-      v-if="props.msg"
-      class="tooltip-bg"
-      anchor="top middle"
-      self="bottom middle"
-      :offset="[10, 10]"
-    >
+    <q-tooltip v-if="props.msg">
       {{ props.msg }}
     </q-tooltip>
   </q-icon>
 </template>
+
+<style scoped>
+q-icon:hover {
+  color: #ff00ff;
+}
+</style>

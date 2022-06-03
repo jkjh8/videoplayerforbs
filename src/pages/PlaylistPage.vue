@@ -24,10 +24,18 @@ function fnAddPlaylist() {
   $q.dialog({
     component: AddPlaylist
   }).onOk(async (addList) => {
-    for (let i = 0; i < addList.length; i++) {
-      playlist.value.push({ ...addList[i], index: playlist.value.length })
+    $q.loading.show()
+    try {
+      for (let i = 0; i < addList.length; i++) {
+        playlist.value.push({ ...addList[i], index: playlist.value.length })
+      }
+      await api.put('/playlist', { playlist: playlist.value })
+      await getPlaylist()
+      $q.loading.hide()
+    } catch (err) {
+      $q.loading.hide()
+      console.error(err)
     }
-    await api.put('/playlist', { playlist: playlist.value })
   })
 }
 
@@ -45,6 +53,7 @@ async function fnEndDrag() {
     item.index = idx
   })
   await api.put('/playlist', { playlist: playlist.value })
+  await getPlaylist()
 }
 
 onMounted(() => {
@@ -82,17 +91,34 @@ onMounted(() => {
           <draggable v-model="playlist" item-key="index" @end="fnEndDrag">
             <template #item="{ element }">
               <q-item
-                style="border: 0.5px solid #efefef; margin: 5px"
+                style="
+                  border: 0.5px solid #efefef;
+                  border-radius: 4px;
+                  margin: 1rem;
+                  padding: 0.5rem;
+                "
+                :style="
+                  ps.file && ps.file.index === element.index
+                    ? 'border: 0.5px solid #aaaaaa;'
+                    : 'border: 0.5px solid #efefef;'
+                "
+                :class="
+                  ps.file && ps.file.index === element.index
+                    ? 'bg-blue-grey-2'
+                    : ''
+                "
                 clickable
               >
                 <q-item-section avatar>
-                  <q-avatar
-                    round
-                    color="primary"
-                    text-color="white"
-                    size="sm"
-                    >{{ element.index + 1 }}</q-avatar
-                  >
+                  <q-avatar round color="primary" text-color="white" size="sm">
+                    {{ element.index + 1 }}
+                    <q-badge
+                      v-if="!element.exist"
+                      floating
+                      color="red"
+                      rounded
+                    />
+                  </q-avatar>
                 </q-item-section>
                 <q-item-section>
                   <q-item-label>

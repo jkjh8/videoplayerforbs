@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { socket } from 'src/boot/socketio'
 
 const playerStatus = ref({})
@@ -24,6 +24,7 @@ function setFullscreen(value) {
 }
 
 function setVolume(value) {
+  socket.emit('command', { command: 'set_mute', value: false })
   socket.emit('command', { command: 'set_volume', value: value })
 }
 
@@ -35,6 +36,23 @@ function getStatus() {
   socket.emit('command', { command: 'get_status' })
 }
 
+function setPlayMode(mode) {
+  socket.emit('command', { command: 'set_play_mode', value: mode })
+}
+
+function setRepeatOne() {
+  socket.emit('command', {
+    command: 'set_repeat_one',
+    value: !playerStatus.value.repeat_one
+  })
+}
+
+function setRepeatAll() {
+  socket.emit('command', {
+    command: 'set_repeat_all',
+    value: !playerStatus.value.repeat_all
+  })
+}
 export {
   playerStatus,
   setPlayPause,
@@ -44,5 +62,8 @@ export {
   setFullscreen,
   setVolume,
   setMute,
-  getStatus
+  getStatus,
+  setPlayMode,
+  setRepeatOne,
+  setRepeatAll
 }

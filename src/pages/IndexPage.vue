@@ -3,17 +3,41 @@ import { onMounted } from 'vue'
 import { hms } from 'src/composables/useTime'
 import {
   playerStatus as ps,
-  setPlayPause,
-  setPosition,
-  setStop
+  setFullscreen,
+  setPlayMode
 } from 'src/composables/usePlayer'
+
 import IconBtn from 'src/components/iconBtn'
+import PlayControl from 'src/components/playControl'
 </script>
 
 <template>
   <q-page class="flex flex-center">
-    {{ ps }}
     <q-card style="max-width: 600px; min-width: 400px; border-radius: 0.8rem">
+      <div class="absolute-left q-pa-md" style="z-index: 5">
+        <IconBtn
+          class=""
+          :name="
+            ps.play_mode === 'Playlist' ? 'playlist_play' : 'play_circle_fill'
+          "
+          :color="ps.play_mode === 'playlist' ? 'orange' : 'teal'"
+          msg="PLAY MODE"
+          @click="
+            ps.play_mode === 'Playlist'
+              ? setPlayMode('Normal')
+              : setPlayMode('Playlist')
+          "
+        />
+      </div>
+      <div class="absolute-right q-pa-md">
+        <IconBtn
+          style="z-index: 5"
+          :name="ps.fullscreen ? 'fullscreen_exit' : 'fullscreen'"
+          :color="ps.fullscreen ? 'red' : ''"
+          msg="FULL SCREEN"
+          @click="setFullscreen(!ps.fullscreen)"
+        />
+      </div>
       <q-card-section>
         <div class="row no-wrap justify-center">
           <q-avatar
@@ -31,45 +55,9 @@ import IconBtn from 'src/components/iconBtn'
         </div>
       </q-card-section>
       <q-card-section>
-        <div class="row no-wrap items-center q-gutter-x-md">
-          <div>
-            {{ hms(ps.curTime) }}
-          </div>
-          <q-slider
-            v-model="ps.position"
-            :min="0"
-            :max="1000"
-            label
-            :label-value="hms(ps.curTime)"
-            @update:model-value="setPosition"
-          ></q-slider>
-          <div>
-            {{ hms(ps.duration) }}
-          </div>
-        </div>
-
-        <div class="row no-wrap">
-          <div>
-            <q-btn
-              v-if="!(ps.status && ps.status.includes('Playing'))"
-              icon="play_arrow"
-              color="primary"
-              flat
-              round
-              @click="setPlayPause"
-            />
-            <q-btn
-              v-else
-              icon="pause"
-              color="yellow"
-              flat
-              round
-              @click="setPlayPause"
-            />
-          </div>
-          <q-btn icon="stop" color="red-10" flat round @click="setStop" />
-        </div>
+        <PlayControl :timeline="true" :control="true" />
       </q-card-section>
     </q-card>
+    {{ ps }}
   </q-page>
 </template>

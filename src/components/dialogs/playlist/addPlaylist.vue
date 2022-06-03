@@ -27,7 +27,12 @@ onMounted(() => {
           <q-icon class="q-mr-md" name="folder" size="sm" />
           <div>파일 선택</div>
         </div>
-        <q-input v-model="filter" dense filled dark label="Search"></q-input>
+        <input
+          v-model="filter"
+          style="border-radius: 5px; border: 1px solid #0000ff"
+          type="text"
+          placeholder="Search"
+        />
       </q-card-section>
 
       <q-card-section class="q-mt-md">
@@ -40,6 +45,7 @@ onMounted(() => {
               row-key="name"
               selection="multiple"
               dense
+              flat
               :filter="filter"
               hide-pagination
               :pagination="{ rowsPerPage: 0 }"
