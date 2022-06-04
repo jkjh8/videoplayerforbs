@@ -4,11 +4,11 @@ import { useQuasar, date, format } from 'quasar'
 import { api } from 'src/boot/axios'
 import { playlist, getPlaylist } from 'src/composables/usePlaylist'
 
-import { playerStatus as ps, openFile } from 'src/composables/usePlayer'
+import { playerStatus as ps, setPlayPause } from 'src/composables/usePlayer'
 
 import PageName from 'src/components/layout/pageName.vue'
 import Confirm from 'src/components/dialogs/chkConfirm'
-import AddPlaylist from 'src/components/dialogs/playlist/addPlaylist.vue'
+import SelectFiles from 'src/components/dialogs/files/selectFile.vue'
 import StkRemote from 'src/components/stickyRemote'
 import Draggable from 'vuedraggable'
 
@@ -22,7 +22,8 @@ const $q = useQuasar()
 
 function fnAddPlaylist() {
   $q.dialog({
-    component: AddPlaylist
+    component: SelectFiles,
+    componentProps: { selection: 'multiple' }
   }).onOk(async (addList) => {
     $q.loading.show()
     try {
@@ -56,8 +57,10 @@ async function fnEndDrag() {
   await getPlaylist()
 }
 
-onMounted(() => {
-  getPlaylist()
+onMounted(async () => {
+  $q.loading.show()
+  await getPlaylist()
+  $q.loading.hide()
 })
 </script>
 
@@ -138,7 +141,7 @@ onMounted(() => {
                       icon="play_arrow"
                       size="sm"
                       color="primary"
-                      @click.prevent.stop="openFile(element)"
+                      @click.prevent.stop="setPlayPause(element)"
                     ></q-btn>
                     <q-btn
                       round

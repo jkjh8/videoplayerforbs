@@ -27,6 +27,17 @@ const columns = [
   { name: 'actions', align: 'center', label: 'Actions' }
 ]
 
+const columnsLtSm = [
+  {
+    name: 'name',
+    align: 'center',
+    label: 'NAME',
+    field: 'name',
+    sortable: true
+  },
+  { name: 'actions', align: 'center', label: 'Actions' }
+]
+
 const columnsAdd = [
   {
     name: 'name',
@@ -87,4 +98,13 @@ const getFiles = async () => {
   }
 }
 
-export { columns, columnsAdd, dir, files, fileWithType, getFiles, fileTypes }
+export {
+  columns,
+  columnsAdd,
+  dir,
+  files,
+  fileWithType,
+  getFiles,
+  fileTypes,
+  columnsLtSm
+}

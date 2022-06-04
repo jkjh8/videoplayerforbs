@@ -4,7 +4,10 @@ import { socket } from 'src/boot/socketio'
 const playerStatus = ref({})
 
 function setPlayPause(file) {
-  socket.emit('command', { command: 'playPause' })
+  if (file) {
+    return socket.emit('command', { command: 'play_direct', file: file })
+  }
+  socket.emit('command', { command: 'play_pause' })
 }
 
 function setStop() {

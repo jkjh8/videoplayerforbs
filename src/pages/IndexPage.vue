@@ -1,20 +1,40 @@
 <script setup>
 import { onMounted } from 'vue'
-import { hms } from 'src/composables/useTime'
+import { useQuasar } from 'quasar'
 import {
   playerStatus as ps,
   setFullscreen,
-  setPlayMode
+  setPlayMode,
+  openFile
 } from 'src/composables/usePlayer'
 
 import IconBtn from 'src/components/iconBtn'
 import PlayControl from 'src/components/playControl'
+import SelectFiles from 'src/components/dialogs/files/selectFile.vue'
+
+const $q = useQuasar()
+
+function fnOpenFile() {
+  $q.dialog({
+    component: SelectFiles,
+    componentProps: { selection: 'single' }
+  }).onOk(async (files) => {
+    $q.loading.show()
+    try {
+      openFile(files[0])
+      $q.loading.hide()
+    } catch (err) {
+      $q.loading.hide()
+      console.error(err)
+    }
+  })
+}
 </script>
 
 <template>
   <q-page class="flex flex-center">
     <q-card style="max-width: 600px; min-width: 400px; border-radius: 0.8rem">
-      <div class="absolute-left q-pa-md" style="z-index: 5">
+      <div class="absolute-top-left q-pa-md" style="z-index: 5">
         <IconBtn
           class=""
           :name="
@@ -29,7 +49,7 @@ import PlayControl from 'src/components/playControl'
           "
         />
       </div>
-      <div class="absolute-right q-pa-md">
+      <div class="absolute-top-right q-pa-md">
         <IconBtn
           style="z-index: 5"
           :name="ps.fullscreen ? 'fullscreen_exit' : 'fullscreen'"
@@ -50,7 +70,12 @@ import PlayControl from 'src/components/playControl'
       </q-card-section>
       <q-card-section>
         <div class="row no-wrap items-center q-gutter-x-md">
-          <IconBtn name="folder" color="yellow-8" size="sm" />
+          <IconBtn
+            name="folder"
+            color="yellow-8"
+            size="sm"
+            @click="fnOpenFile"
+          />
           <div>{{ ps.file && ps.file.name ? ps.file.name : '' }}</div>
         </div>
       </q-card-section>

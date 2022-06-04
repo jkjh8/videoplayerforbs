@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useDialogPluginComponent, format } from 'quasar'
 import { fileWithType, columnsAdd, getFiles } from 'src/composables/useFiles'
 
+const props = defineProps({ selection: String })
 const emit = defineEmits([...useDialogPluginComponent.emits])
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent()
@@ -43,7 +44,7 @@ onMounted(() => {
               :columns="columnsAdd"
               :rows="fileWithType"
               row-key="name"
-              selection="multiple"
+              :selection="selection"
               dense
               flat
               :filter="filter"
@@ -52,7 +53,7 @@ onMounted(() => {
             >
               <template #body-cell-name="props">
                 <q-td :props="props" class="text-left">
-                  <div class="row items-center q-gutter-x-sm">
+                  <div class="row no-wrap items-center q-gutter-x-sm">
                     <q-icon
                       v-if="props.row.type && props.row.type.includes('image')"
                       name="image"

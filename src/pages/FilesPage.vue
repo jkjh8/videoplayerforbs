@@ -7,14 +7,11 @@ import {
   files,
   fileWithType,
   getFiles,
-  columns
+  columns,
+  columnsLtSm
 } from 'src/composables/useFiles'
 
-import {
-  playerStatus as ps,
-  setPlayPause,
-  openFile
-} from 'src/composables/usePlayer'
+import { playerStatus as ps, setPlayPause } from 'src/composables/usePlayer'
 
 import PageName from 'src/components/layout/pageName.vue'
 import Upload from 'src/components/dialogs/files/uploadFiles'
@@ -111,6 +108,7 @@ onMounted(() => {
       <q-card style="width: 100%">
         <q-card-section class="q-pa-none">
           <q-table
+            class="gt-sm"
             :columns="columns"
             :rows="fileWithType"
             :pagination="{ rowsPerPage: 0 }"
@@ -155,7 +153,68 @@ onMounted(() => {
                     <IconBtn
                       name="play_arrow"
                       msg="재생"
-                      @click="openFile(props.row)"
+                      @click="setPlayPause(props.row)"
+                    />
+                    <IconBtn
+                      name="delete"
+                      color="red"
+                      size="xs"
+                      msg="삭제"
+                      @click="deleteFile(props.row)"
+                    />
+                  </div>
+                </q-td>
+              </q-tr>
+            </template>
+          </q-table>
+
+          <q-table
+            class="lt-md"
+            :columns="columnsLtSm"
+            :rows="fileWithType"
+            :pagination="{ rowsPerPage: 0 }"
+            hide-pagination
+          >
+            <template #body="props">
+              <q-tr :props="props">
+                <q-td key="name" :props="props" class="text-left">
+                  <div class="row no-wrap items-center q-gutter-x-sm">
+                    <q-icon
+                      v-if="props.row.type && props.row.type.includes('image')"
+                      name="image"
+                      size="sm"
+                      color="primary"
+                    />
+                    <q-icon
+                      v-else-if="
+                        props.row.type && props.row.type.includes('video')
+                      "
+                      name="videocam"
+                      size="sm"
+                      color="blue-grey-10"
+                    />
+                    <div style="max-width: 200px; word-break: break-all">
+                      {{ props.row.name }}
+                    </div>
+                  </div>
+                </q-td>
+                <!-- <q-td key="size" :props="props">
+                  {{ format.humanStorageSize(props.row.size) }}
+                </q-td> -->
+                <!-- <q-td key="createdAt" :props="props">
+                  {{
+                    date.formatDate(
+                      props.row.createdAt,
+                      'YYYY-MM-DD hh:mm:ss a'
+                    )
+                  }}
+                </q-td> -->
+                <q-td key="actions" :props="props">
+                  <div class="q-gutter-x-sm">
+                    <IconBtn
+                      name="play_arrow"
+                      msg="재생"
+                      @click="setPlayPause(props.row)"
                     />
                     <IconBtn
                       name="delete"
