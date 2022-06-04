@@ -8,7 +8,9 @@ import {
   setVolume,
   setMute,
   setRepeatAll,
-  setRepeatOne
+  setRepeatOne,
+  setFf,
+  setRew
 } from 'src/composables/usePlayer'
 
 import IconBtn from 'src/components/iconBtn'
@@ -38,6 +40,7 @@ const props = defineProps({ timeline: Boolean, control: Boolean })
             name="skip_previous"
             color="grey-10"
             msg="PREVIOUS"
+            @click="setRew"
           />
 
           <IconBtn
@@ -59,7 +62,8 @@ const props = defineProps({ timeline: Boolean, control: Boolean })
             v-if="ps.play_mode === 'Playlist'"
             name="skip_next"
             color="grey-10"
-            msg="PREVIOUS"
+            msg="NEXT"
+            @click="setFf"
           />
 
           <IconBtn name="stop" color="red-10" msg="STOP" @click="setStop" />

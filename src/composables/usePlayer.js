@@ -56,6 +56,14 @@ function setRepeatAll() {
     value: !playerStatus.value.repeat_all
   })
 }
+
+function setFf() {
+  socket.emit('command', { command: 'set_ff' })
+}
+
+function setRew() {
+  socket.emit('command', { command: 'set_rew' })
+}
 export {
   playerStatus,
   setPlayPause,
@@ -68,5 +76,7 @@ export {
   getStatus,
   setPlayMode,
   setRepeatOne,
-  setRepeatAll
+  setRepeatAll,
+  setFf,
+  setRew
 }
