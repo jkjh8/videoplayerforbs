@@ -32,11 +32,17 @@ function fnOpenFile() {
 </script>
 
 <template>
-  <q-page class="flex flex-center">
-    <q-card style="max-width: 600px; min-width: 400px; border-radius: 0.8rem">
+  <q-page>
+    <q-card
+      style="
+        max-width: 600px;
+        min-width: 400px;
+        border-radius: 0.8rem;
+        margin: 10% auto;
+      "
+    >
       <div class="absolute-top-left q-pa-md" style="z-index: 5">
         <IconBtn
-          class=""
           :name="
             ps.play_mode === 'Playlist' ? 'playlist_play' : 'play_circle_fill'
           "
@@ -74,6 +80,7 @@ function fnOpenFile() {
             name="folder"
             color="yellow-8"
             size="sm"
+            msg="OPEN FILE"
             @click="fnOpenFile"
           />
           <div>{{ ps.file && ps.file.name ? ps.file.name : '' }}</div>
@@ -83,6 +90,5 @@ function fnOpenFile() {
         <PlayControl :timeline="true" :control="true" />
       </q-card-section>
     </q-card>
-    {{ ps }}
   </q-page>
 </template>

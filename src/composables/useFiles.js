@@ -91,11 +91,16 @@ const fileWithType = computed(() => {
 })
 
 const getFiles = async () => {
-  const r = await api.get(`/files?dir=${dir.value.join('/')}`)
-  files.value = r.data.files
-  if (r.data.dir) {
-    dir.value = r.data.dir.split('/')
+  try {
+    const r = await api.get(`/files?dir=${dir.value.join('/')}`)
+    files.value = r.data.files
+  } catch (err) {
+    console.error(err)
   }
+  // console.log(files.value)
+  // if (r.data.dir) {
+  //   dir.value = r.data.dir.split('/')
+  // }
 }
 
 export {

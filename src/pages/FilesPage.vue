@@ -6,7 +6,7 @@ import {
   dir,
   files,
   fileWithType,
-  getFiles,
+  getFiles as gf,
   columns,
   columnsLtSm
 } from 'src/composables/useFiles'
@@ -81,6 +81,12 @@ function deleteFile(file) {
   })
 }
 
+function getFiles() {
+  $q.loading.show()
+  gf()
+  $q.loading.hide()
+}
+
 onMounted(() => {
   getFiles()
 })
@@ -96,11 +102,11 @@ onMounted(() => {
         icon="svguse:icons.svg#diskColor"
       />
       <div>
-        <q-btn round flat color="yellow" icon="folder" @click="makeFolder">
-          <Tooltip msg="폴더생성" />
-        </q-btn>
         <q-btn round flat color="primary" icon="upload" @click="upload">
           <Tooltip msg="파일업로드" />
+        </q-btn>
+        <q-btn round flat color="yellow-8" icon="refresh" @click="getFiles">
+          <Tooltip msg="새로고침" />
         </q-btn>
       </div>
     </div>

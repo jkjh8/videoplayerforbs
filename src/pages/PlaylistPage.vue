@@ -4,7 +4,7 @@ import { useQuasar, date, format } from 'quasar'
 import { api } from 'src/boot/axios'
 import { playlist, getPlaylist } from 'src/composables/usePlaylist'
 
-import { playerStatus as ps, setPlayPause } from 'src/composables/usePlayer'
+import { playerStatus as ps, setPlayById } from 'src/composables/usePlayer'
 
 import PageName from 'src/components/layout/pageName.vue'
 import Confirm from 'src/components/dialogs/chkConfirm'
@@ -73,7 +73,17 @@ onMounted(async () => {
         caption="플레이 리스트 관리"
         icon="svguse:icons.svg#listColor"
       />
-      <div>
+      <div class="row no-wrap">
+        <q-btn
+          round
+          flat
+          color="primary"
+          icon="play_arrow"
+          @click="setPlayById(0)"
+        >
+          <Tooltip msg="플레이 리스트 재생" />
+        </q-btn>
+        <q-separator class="q-mx-sm" vertical />
         <q-btn
           round
           flat
@@ -83,7 +93,7 @@ onMounted(async () => {
         >
           <Tooltip msg="파일 추가" />
         </q-btn>
-        <q-btn round flat color="green-10" icon="refresh" @click="getPlaylist">
+        <q-btn round flat color="yellow-10" icon="refresh" @click="getPlaylist">
           <Tooltip msg="새로고침" />
         </q-btn>
       </div>
@@ -141,7 +151,7 @@ onMounted(async () => {
                       icon="play_arrow"
                       size="sm"
                       color="primary"
-                      @click.prevent.stop="setPlayPause(element)"
+                      @click.prevent.stop="setPlayById(element.index)"
                     ></q-btn>
                     <q-btn
                       round
@@ -165,7 +175,7 @@ onMounted(async () => {
         (ps.status && ps.status.includes('Paused'))
       "
       position="bottom-right"
-      :offset="[18, 18]"
+      :offset="[30, 30]"
     >
       <StkRemote />
     </q-page-sticky>

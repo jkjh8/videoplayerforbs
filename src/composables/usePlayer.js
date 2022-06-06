@@ -64,6 +64,10 @@ function setFf() {
 function setRew() {
   socket.emit('command', { command: 'set_rew' })
 }
+
+function setPlayById(id) {
+  socket.emit('command', { command: 'play_id', index: id })
+}
 export {
   playerStatus,
   setPlayPause,
@@ -78,5 +82,6 @@ export {
   setRepeatOne,
   setRepeatAll,
   setFf,
-  setRew
+  setRew,
+  setPlayById
 }
