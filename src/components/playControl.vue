@@ -10,12 +10,21 @@ import {
   setRepeatAll,
   setRepeatOne,
   setFf,
-  setRew
+  setRew,
+  startPosition,
+  endPosition
 } from 'src/composables/usePlayer'
 
 import IconBtn from 'src/components/iconBtn'
 
 const props = defineProps({ timeline: Boolean, control: Boolean })
+function updatePan(phase) {
+  if (phase === 'start') {
+    startPosition()
+  } else {
+    endPosition()
+  }
+}
 </script>
 
 <template>
@@ -28,6 +37,7 @@ const props = defineProps({ timeline: Boolean, control: Boolean })
         :max="ps.duration"
         label
         :label-value="hms(ps.curTime)"
+        @pan="updatePan"
         @update:model-value="setPosition"
       />
       <div>{{ hms(ps.duration) }}</div>

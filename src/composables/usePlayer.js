@@ -87,6 +87,14 @@ function setRtPort(port) {
   socket.emit('command', { command: 'set_rt_port', port: port })
 }
 
+function startPosition() {
+  socket.emit('command', { command: 'start_position' })
+}
+
+function endPosition() {
+  socket.emit('command', { command: 'end_position' })
+}
+
 export {
   playerStatus,
   stikyControl,
@@ -105,5 +113,7 @@ export {
   setRew,
   setPlayById,
   setRtIpaddr,
-  setRtPort
+  setRtPort,
+  startPosition,
+  endPosition
 }
