@@ -4,7 +4,11 @@ import { useQuasar, date, format } from 'quasar'
 import { api } from 'src/boot/axios'
 import { playlist, getPlaylist } from 'src/composables/usePlaylist'
 
-import { playerStatus as ps, setPlayById } from 'src/composables/usePlayer'
+import {
+  playerStatus as ps,
+  setPlayById,
+  stikyControl
+} from 'src/composables/usePlayer'
 
 import PageName from 'src/components/layout/pageName.vue'
 import Confirm from 'src/components/dialogs/chkConfirm'
@@ -58,6 +62,7 @@ async function fnEndDrag() {
 }
 
 onMounted(async () => {
+  stikyControl.value = true
   $q.loading.show()
   await getPlaylist()
   $q.loading.hide()
@@ -169,15 +174,5 @@ onMounted(async () => {
         </q-card-section>
       </q-card>
     </div>
-    <q-page-sticky
-      v-if="
-        (ps.status && ps.status.includes('Playing')) ||
-        (ps.status && ps.status.includes('Paused'))
-      "
-      position="bottom-right"
-      :offset="[30, 30]"
-    >
-      <StkRemote />
-    </q-page-sticky>
   </q-page>
 </template>

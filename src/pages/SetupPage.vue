@@ -3,15 +3,20 @@ import { onMounted } from 'vue'
 import PageName from 'src/components/layout/pageName.vue'
 import {
   playerStatus as ps,
+  stikyControl,
   setVolume,
   setMute,
   setFullscreen,
   getStatus,
-  setPlayMode
+  setPlayMode,
+  setRtIpaddr,
+  setRtPort
 } from 'src/composables/usePlayer'
+import { chkIpaddr, chkPort } from '/src/composables/useRules'
 import { socket } from '/src/boot/socketio'
 
 onMounted(() => {
+  stikyControl.value = true
   getStatus()
 })
 </script>
@@ -94,6 +99,37 @@ onMounted(() => {
                 v-model="ps.fullscreen"
                 @update:model-value="setFullscreen"
               ></q-toggle>
+            </q-item-section>
+          </q-item>
+
+          <q-item>
+            <q-item-section>
+              <q-item-label>RETURN</q-item-label>
+              <q-item-label caption>데이터 리턴 주소</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <div class="row no-wrap q-gutter-x-sm">
+                <q-input
+                  v-model="ps.rt_ipaddr"
+                  filled
+                  dense
+                  label="IP ADDRESS"
+                  :rules="chkIpaddr"
+                  lazy-rules
+                  @update:model-value="setRtIpaddr(ps.rt_ipaddr)"
+                />
+                <q-input
+                  v-model="ps.rt_port"
+                  style="width: 100px"
+                  filled
+                  dense
+                  type="number"
+                  :rules="chkPort"
+                  lazy-rules
+                  label="PORT"
+                  @update:model-value="setRtPort(ps.rt_port)"
+                />
+              </div>
             </q-item-section>
           </q-item>
         </q-list>

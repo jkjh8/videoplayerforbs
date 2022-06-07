@@ -11,7 +11,11 @@ import {
   columnsLtSm
 } from 'src/composables/useFiles'
 
-import { playerStatus as ps, setPlayPause } from 'src/composables/usePlayer'
+import {
+  playerStatus as ps,
+  setPlayPause,
+  stikyControl
+} from 'src/composables/usePlayer'
 
 import PageName from 'src/components/layout/pageName.vue'
 import Upload from 'src/components/dialogs/files/uploadFiles'
@@ -88,6 +92,7 @@ function getFiles() {
 }
 
 onMounted(() => {
+  stikyControl.value = true
   getFiles()
 })
 </script>
@@ -237,15 +242,5 @@ onMounted(() => {
         </q-card-section>
       </q-card>
     </div>
-    <q-page-sticky
-      v-if="
-        (ps.status && ps.status.includes('Playing')) ||
-        (ps.status && ps.status.includes('Paused'))
-      "
-      position="bottom-right"
-      :offset="[18, 18]"
-    >
-      <StkRemote />
-    </q-page-sticky>
   </q-page>
 </template>

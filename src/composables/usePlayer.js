@@ -1,7 +1,17 @@
 import { ref } from 'vue'
 import { socket } from 'src/boot/socketio'
 
-const playerStatus = ref({})
+const playerStatus = ref({
+  fullscreen: false,
+  play_mode: 'Normal',
+  volume: 100,
+  mute: false,
+  repeat_one: false,
+  repeat_all: false,
+  rt_ipaddr: '127.0.0.1',
+  rt_port: 12302
+})
+const stikyControl = ref(false)
 
 function setPlayPause(file) {
   if (file) {
@@ -68,8 +78,18 @@ function setRew() {
 function setPlayById(id) {
   socket.emit('command', { command: 'play_id', index: id })
 }
+
+function setRtIpaddr(ip) {
+  socket.emit('command', { command: 'set_rt_ipaddr', ipaddr: ip })
+}
+
+function setRtPort(port) {
+  socket.emit('command', { command: 'set_rt_port', port: port })
+}
+
 export {
   playerStatus,
+  stikyControl,
   setPlayPause,
   setStop,
   openFile,
@@ -83,5 +103,7 @@ export {
   setRepeatAll,
   setFf,
   setRew,
-  setPlayById
+  setPlayById,
+  setRtIpaddr,
+  setRtPort
 }

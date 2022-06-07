@@ -3,6 +3,7 @@ import { onBeforeMount } from 'vue'
 import { useRouter } from 'vue-router'
 import { socket } from 'src/boot/socketio'
 import MenuComponent from 'components/layout/menuComponent'
+import StkRemote from 'src/components/stickyRemote'
 
 import { playerStatus as ps } from 'src/composables/usePlayer'
 
@@ -10,7 +11,8 @@ const router = useRouter()
 
 onBeforeMount(() => {
   socket.on('status', (args) => {
-    ps.value = { ...args }
+    ps.value = { ...ps.value, ...args }
+    console.log(ps.value)
   })
   socket.connect()
 })
@@ -50,6 +52,9 @@ onBeforeMount(() => {
       <div class="page">
         <router-view />
       </div>
+      <q-page-sticky position="bottom-right" :offset="[18, 18]">
+        <StkRemote />
+      </q-page-sticky>
     </q-page-container>
   </q-layout>
 </template>

@@ -5,7 +5,8 @@ import {
   playerStatus as ps,
   setFullscreen,
   setPlayMode,
-  openFile
+  openFile,
+  stikyControl
 } from 'src/composables/usePlayer'
 
 import IconBtn from 'src/components/iconBtn'
@@ -29,6 +30,9 @@ function fnOpenFile() {
     }
   })
 }
+onMounted(() => {
+  stikyControl.value = false
+})
 </script>
 
 <template>
