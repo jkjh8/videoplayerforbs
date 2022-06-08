@@ -13,7 +13,6 @@ function checkFileType(files) {
 }
 
 function onRejected(rejectedEntries) {
-  console.log(rejectedEntries)
   notifyError({
     message: `${rejectedEntries.length}의 지원하지 않은 포멧의 파일`,
     caption: '오류가 계속되면 관리자에게 문의 해주세요.'
@@ -36,6 +35,7 @@ function uploadError(err) {
           :url="url"
           multiple
           :filter="checkFileType"
+          :accept="'.mp3, .mp4, .wav, .avi, .flac, .mov, .acc, .mkv, .jpg, .png, .bmp'"
           @rejected="onRejected"
           @error="uploadError"
         >

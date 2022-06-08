@@ -12,7 +12,6 @@ const router = useRouter()
 onBeforeMount(() => {
   socket.on('status', (args) => {
     ps.value = { ...ps.value, ...args }
-    console.log(ps.value)
   })
   socket.connect()
 })

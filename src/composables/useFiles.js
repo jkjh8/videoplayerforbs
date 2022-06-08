@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { api } from 'src/boot/axios'
 
-const fileTypes = ['video/mp4', 'image/png']
+const fileTypes = ['video/mp4', 'image/png', 'image/jpeg', 'image/bmp']
 const columns = [
   {
     name: 'name',
@@ -61,31 +61,55 @@ const dir = ref([])
 const fileWithType = computed(() => {
   const arr = []
   for (let i = 0; i < files.value.length; i++) {
+    let type = ''
     const ext = files.value[i].name.split('.')
     if (ext) {
       switch (ext[ext.length - 1]) {
         case 'mp4':
-          arr.push({
-            ...files.value[i],
-            type: 'video/mp4',
-            address: `http://${
-              window.location.hostname
-            }:3000/media/${encodeURIComponent(files.value[i].name)}`
-          })
+          type = 'video/mp4'
+          break
+        case 'mov':
+          type = 'video/mov'
+          break
+        case 'avi':
+          type = 'video/avi'
+          break
+        case 'mkv':
+          type = 'video/mkv'
+          break
+        case 'mpeg':
+          type = 'video/mpeg'
+          break
+        case 'mp3':
+          type = 'audio/mpeg'
+          break
+        case 'flac':
+          type = 'audio/flac'
+          break
+        case 'wav':
+          type = 'audio/wav'
+          break
+        case 'acc':
+          type = 'audio/acc'
           break
         case 'png':
-          arr.push({
-            ...files.value[i],
-            type: 'image/png',
-            address: `http://${
-              window.location.hostname
-            }:3000/media/${encodeURIComponent(files.value[i].name)}`
-          })
+          type = 'image/png'
           break
-        default:
-          arr.push({ ...files.value[i] })
+        case 'jpg':
+          type = 'image/jpeg'
+          break
+        case 'bmp':
+          type = 'image/bmp'
+          break
       }
     }
+    arr.push({
+      ...files.value[i],
+      type,
+      address: `http://${
+        window.location.hostname
+      }:3000/media/${encodeURIComponent(files.value[i].name)}`
+    })
   }
   return arr
 })
