@@ -12,7 +12,10 @@ async function getPlaylist() {
     playlist.value.push({ ...pl[i] })
   }
   console.log(playlist.value)
-  socket.emit('command', { command: 'playlist', playlist: playlist.value })
+  socket.emit('command', {
+    command: 'update_playlist',
+    playlist: playlist.value
+  })
 }
 
 const columns = [
@@ -47,4 +50,8 @@ const columns = [
   { name: 'actions', align: 'center', label: 'Actions' }
 ]
 
-export { playlist, getPlaylist, columns }
+function updatePlaylist(plist) {
+  socket.emit('command', { command: 'update_playlist', playlist: plist })
+}
+
+export { playlist, getPlaylist, columns, updatePlaylist }

@@ -2,7 +2,11 @@
 import { ref, onMounted } from 'vue'
 import { useQuasar, date, format } from 'quasar'
 import { api } from 'src/boot/axios'
-import { playlist, getPlaylist } from 'src/composables/usePlaylist'
+import {
+  playlist,
+  getPlaylist,
+  updatePlaylist
+} from 'src/composables/usePlaylist'
 
 import {
   playerStatus as ps,
@@ -35,6 +39,7 @@ function fnAddPlaylist() {
         playlist.value.push({ ...addList[i], index: playlist.value.length })
       }
       await api.put('/playlist', { playlist: playlist.value })
+      updatePlaylist(playlist.value)
       await getPlaylist()
       $q.loading.hide()
     } catch (err) {
@@ -58,6 +63,7 @@ async function fnEndDrag() {
     item.index = idx
   })
   await api.put('/playlist', { playlist: playlist.value })
+  updatePlaylist(playlist.value)
   await getPlaylist()
 }
 
