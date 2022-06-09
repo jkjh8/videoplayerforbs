@@ -11,7 +11,6 @@ async function getPlaylist() {
   for (let i = 0; i < pl.length; i++) {
     playlist.value.push({ ...pl[i] })
   }
-  console.log(playlist.value)
   socket.emit('command', {
     command: 'update_playlist',
     playlist: playlist.value

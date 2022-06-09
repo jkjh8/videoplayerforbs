@@ -9,7 +9,8 @@ const playerStatus = ref({
   repeat_one: false,
   repeat_all: false,
   rt_ipaddr: '127.0.0.1',
-  rt_port: 12302
+  rt_port: 12302,
+  rt_type: 'AMX'
 })
 const stikyControl = ref(false)
 
@@ -95,6 +96,10 @@ function endPosition() {
   socket.emit('command', { command: 'end_position' })
 }
 
+function setRtType(type) {
+  socket.emit('command', { command: 'set_rt_type', value: type })
+}
+
 export {
   playerStatus,
   stikyControl,
@@ -115,5 +120,6 @@ export {
   setRtIpaddr,
   setRtPort,
   startPosition,
-  endPosition
+  endPosition,
+  setRtType
 }

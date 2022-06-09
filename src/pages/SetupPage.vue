@@ -10,7 +10,8 @@ import {
   getStatus,
   setPlayMode,
   setRtIpaddr,
-  setRtPort
+  setRtPort,
+  setRtType
 } from 'src/composables/usePlayer'
 import { chkIpaddr, chkPort } from '/src/composables/useRules'
 import { socket } from '/src/boot/socketio'
@@ -33,7 +34,7 @@ onMounted(() => {
     <q-card style="width: 100%">
       <q-card-section class="q-py-none">
         <q-list separator>
-          <q-item>
+          <q-item class="q-mt-md">
             <q-item-section>
               <q-item-label>PLAY MODE</q-item-label>
               <q-item-label caption>플레이 모드 설정</q-item-label>
@@ -99,6 +100,22 @@ onMounted(() => {
                 v-model="ps.fullscreen"
                 @update:model-value="setFullscreen"
               ></q-toggle>
+            </q-item-section>
+          </q-item>
+
+          <q-item>
+            <q-item-section>
+              <q-item-label>GET LIST</q-item-label>
+              <q-item-label caption>리스트 리턴 설정</q-item-label>
+            </q-item-section>
+            <q-item-section side>
+              <q-select
+                :options="['AMX', 'String']"
+                v-model="ps.rt_type"
+                filled
+                dense
+                @update:model-value="setRtType(ps.rt_type)"
+              ></q-select>
             </q-item-section>
           </q-item>
 
